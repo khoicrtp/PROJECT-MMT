@@ -1,8 +1,8 @@
 from array import *
 
 
-file1 = open('test.txt')
-Lines = file1.readlines()
+file = open('test.txt')
+Lines = file.readlines()
  
 count = 0
 
