@@ -4,6 +4,9 @@ from socket import *
 from threading import Thread
 import tkinter
 
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
+
 def receive():
     """Handles receiving of messages."""
     while True:
