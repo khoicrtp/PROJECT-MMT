@@ -3,7 +3,10 @@
 from socket import*
 from threading import Thread
 
-        
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
+
+
 clients = {}
 addresses = {}
 
@@ -43,7 +46,7 @@ def handle_client(client):  # Takes client socket as argument.
             broadcast(msg, name+": ")
         else:
             client.sendall(bytes("quit", "utf8"))
-            client.close()
+            #client.close()
             del clients[client]
             broadcast(bytes(name + " has left the chat.", "utf8"))
             break
@@ -63,4 +66,4 @@ if __name__ == "__main__":
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
-    SERVER.close()
+    #SERVER.close()
