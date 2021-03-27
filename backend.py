@@ -148,13 +148,29 @@ def userUI():
 
 
 # MAIN UI
+def checkValid(a, username):
+    for i in range(len(a)):
+        if (a[i][0] == username.get()):
+            return 0
+    return 1
 
 
 def register(Rusername, Rpassword):
     info = open("user.txt", "r")
     Lines = info.readlines()
 
-    print(Rusername.get())
+    a = []
+    tmp = ""
+    result = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        a.append([(j) for j in split])
+
+    if checkValid(a, Rusername) == 0:
+        tkinter.messagebox.showinfo(
+            "ERROR", "The username is registered. Please try with another username.")
+        return
 
     Lines.append("\n" + Rusername.get() + " " + Rpassword.get())
 
