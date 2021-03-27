@@ -1,5 +1,3 @@
 user pass
 as as
-c c
-x x
-zx zx
+ 

@@ -3,3 +3,4 @@
 3 Amsterdam Cold 18/2
 4 Washington Cold 16/2
 5 CamRanh Warm 19/2
+6 a Warm 7/9
