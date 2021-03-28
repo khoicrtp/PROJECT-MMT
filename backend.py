@@ -250,10 +250,10 @@ def mainUI():
                     userUI()
                     return
                 elif(aUsers[i][0] == username.get()):
-                    tkinter.messagebox.showinfo(
+                    tkinter.messagebox.showerror(
                         "ERROR", "Wrong password! Please try again")
                 if(i == len(aUsers)-1):
-                    tkinter.messagebox.showinfo(
+                    tkinter.messagebox.showerror(
                         "ERROR", "Invalid Login info, please create a new one")
                     mainUI.destroy()
                     registerUI()
