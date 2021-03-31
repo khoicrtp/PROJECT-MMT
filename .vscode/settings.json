@@ -1,3 +1,20 @@
 {
-    "python.pythonPath": "C:\\Users\\bachm\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
+    "python.pythonPath": "C:\\Users\\datle\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3307,
+            "driver": "MySQL",
+            "name": "SQL1",
+            "group": "SQL",
+            "database": "mydb",
+            "username": "user",
+            "password": "pass",
+            "connectionTimeout": 30
+        }
+    ]
 }
