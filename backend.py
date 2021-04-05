@@ -54,12 +54,12 @@ def getLogin():
 
 
 def updateUser():
-    os.system("user.txt")
-
+    #os.system("user.txt")
+    os.system("xdg-open user.txt")
 
 def updateData():
-    os.system("weather.txt")
-
+    #os.system("weather.txt")
+    os.system("xdg-open weather.txt")
 
 def adminUI():
     ui = tkinter.Tk()
