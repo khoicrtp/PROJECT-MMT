@@ -1,5 +1,6 @@
 from array import *
 import tkinter
+from tkinter import messagebox
 from functools import partial
 import os
 import datetime
@@ -52,12 +53,12 @@ def getLogin():
 
 
 def updateUser():
-    #os.system("user.txt")
-    os.system("xdg-open user.txt")
+    os.system("user.txt")
+    #os.system("xdg-open user.txt")
 
 def updateData():
-    #os.system("weather.txt")
-    os.system("xdg-open weather.txt")
+    os.system("weather.txt")
+    #os.system("xdg-open weather.txt")
 
 def adminUI():
     ui = tkinter.Tk()
@@ -255,21 +256,21 @@ def mainUI():
     mainUI = tkinter.Tk()
     mainUI.geometry('600x300')
     mainUI.title('LOGIN')
-    mainUI.configure(bg='light blue')
+    mainUI.configure(bg='#ffc0cb')
 
     welcomeLabel = tkinter.Label(
-        mainUI, text="WELCOME TO WEATHER APP").grid(row=0, column=0)
+        mainUI, text="WELCOME TO WEATHER APP", bg='light blue').grid(row=0, column=0)
 
 # username label and text entry box
     usernameLabel = tkinter.Label(
-        mainUI, text="Username").grid(row=1, column=0)
+        mainUI, text="Username", bg='pink').grid(row=1, column=0)
     username = tkinter.StringVar()
     usernameEntry = tkinter.Entry(
         mainUI, textvariable=username).grid(row=1, column=1)
 
 # password label and password entry box
     passwordLabel = tkinter.Label(
-        mainUI, text="Password").grid(row=2, column=0)
+        mainUI, text="Password", bg='pink').grid(row=2, column=0)
     password = tkinter.StringVar()
     passwordEntry = tkinter.Entry(
         mainUI, textvariable=password, show='*').grid(row=2, column=1)
@@ -285,7 +286,7 @@ def mainUI():
         registerUI()
 
     regButton = tkinter.Button(
-        mainUI, text="Register", bg="light green", command=combinedFunc).grid(row=2, column=2)
+        mainUI, text="Register", bg="orange", command=combinedFunc).grid(row=2, column=2)
 
     mainUI.mainloop()
 
