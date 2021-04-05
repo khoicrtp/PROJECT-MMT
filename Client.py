@@ -4,18 +4,22 @@ from socket import *
 from threading import Thread
 import tkinter
 
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE,SIG_DFL)
-
 def receive():
     """Handles receiving of messages."""
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
+            msg+= " :v"
             msg_list.insert(tkinter.END, msg)
         except OSError:  # Possibly client has left the chat.
             break
 
+def send_message(msg):  # event is passed by binders.
+    """Handles sending of messages."""
+    client_socket.sendall(bytes(msg, "utf8"))
+    if msg == "quit":
+        client_socket.close()
+        top.quit()
 
 def send(event=None):  # event is passed by binders.
     """Handles sending of messages."""
@@ -40,7 +44,7 @@ my_msg = tkinter.StringVar()  # For the messages to be sent.
 my_msg.set("Type your messages here.")
 scrollbar = tkinter.Scrollbar(messages_frame)  # To navigate through past messages.
 # Following will contain the messages.
-msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+msg_list = tkinter.Listbox(messages_frame, height=15, width=100, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 msg_list.pack()
@@ -57,15 +61,21 @@ top.protocol("WM_DELETE_WINDOW", on_closing)
 #----Now comes the sockets part----
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65431        # The port used by the server
+BUFSIZ = 1024
+
+if not PORT:
+    1
+    PORT = 33000
+else:
+    PORT = int(PORT)
+
+
 # Create a TCP/IP socket
 ADDR = (HOST, PORT)
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect(ADDR)
 server_address = (HOST, PORT)
 
-BUFSIZ = 1024
-
-client_socket = socket(AF_INET, SOCK_STREAM)
 
 receive_thread = Thread(target=receive)
 receive_thread.start()
