@@ -1,5 +1,3 @@
-import tkinter.messagebox
-from tkinter import *
 from array import *
 import tkinter
 from functools import partial
