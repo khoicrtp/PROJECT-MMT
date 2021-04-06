@@ -13,6 +13,7 @@ def printIndex(a, n):
         temp += " "
     print(temp)
 
+
 # print all row
 
 
@@ -20,13 +21,13 @@ def printAll():
     file = open('weather.txt')
 
     Lines = file.readlines()
-# read 2D-array from Lines
+    # read 2D-array from Lines
     a = []
     tmp = ""
     for i in range(len(Lines)):
         tmp = Lines[i]
         split = tmp.split()
-        a.append([(j) for j in split])
+        a.append([j for j in split])
     result = ""
     for i in range(len(a)):
         for j in range(len(a[i])):
@@ -49,16 +50,19 @@ def getLogin():
         aUsers.append([(j) for j in split])
     return aUsers
 
+
 # ADMIN UI
 
 
 def updateUser():
     os.system("user.txt")
-    #os.system("xdg-open user.txt")
+    # os.system("xdg-open user.txt")
+
 
 def updateData():
     os.system("weather.txt")
-    #os.system("xdg-open weather.txt")
+    # os.system("xdg-open weather.txt")
+
 
 def adminUI():
     ui = tkinter.Tk()
@@ -74,9 +78,11 @@ def adminUI():
     def combinedLog():
         ui.destroy()
         mainUI()
+
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=0, column=10)
     ui.mainloop()
+
 
 # USER UI
 
@@ -85,7 +91,7 @@ def printFind(find):
     file = open('weather.txt')
 
     Lines = file.readlines()
-# read 2D-array from Lines
+    # read 2D-array from Lines
     a = []
     tmp = ""
     result = ""
@@ -95,7 +101,7 @@ def printFind(find):
         a.append([(j) for j in split])
     for i in range(len(a)):
         for j in range(len(a[i])):
-            if (a[i][j] == find.get()):
+            if a[i][j] == find.get():
                 for k in range(len(a[i])):
                     result += a[i][k] + " "
                 result += '\n'
@@ -113,7 +119,7 @@ def writeToFile(a, str):
 def changeUserPass(username, password):
     aUsers = getLogin()
     for i in aUsers:
-        if(i[0] == 'username'):
+        if i[0] == 'username':
             i[1] = password
     writeToFile(aUsers, "login.txt")
 
@@ -145,6 +151,7 @@ def userUI():
             "Goodbye", "Thank you for using my team's app!")
         ui.destroy()
         mainUI()
+
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=2, column=7)
 
@@ -154,7 +161,7 @@ def userUI():
 # MAIN UI
 def checkValid(a, username):
     for i in range(len(a)):
-        if (a[i][0] == username.get()):
+        if a[i][0] == username.get():
             return 0
     return 1
 
@@ -191,13 +198,13 @@ def registerUI():
     reg.title('REGISTRATION')
     reg.configure(bg='light blue')
 
-# username label and text entry box
+    # username label and text entry box
     RusernameLabel = tkinter.Label(reg, text="Username").grid(row=0, column=0)
     Rusername = tkinter.StringVar()
     RusernameEntry = tkinter.Entry(
         reg, textvariable=Rusername).grid(row=0, column=1)
 
-# password label and password entry box
+    # password label and password entry box
     RpasswordLabel = tkinter.Label(reg, text="Password").grid(row=1, column=0)
     Rpassword = tkinter.StringVar()
     RpasswordEntry = tkinter.Entry(
@@ -206,7 +213,7 @@ def registerUI():
     validateReg = partial(register, Rusername, Rpassword)
 
     def combinedFunc():
-        if(Rusername.get() == '' or Rpassword == ''):
+        if (Rusername.get() == '' or Rpassword == ''):
             tkinter.messagebox.showinfo(
                 "ERROR", "Registration failed. Please check username and password again")
             return
@@ -214,20 +221,22 @@ def registerUI():
         if flag == 1:
             reg.destroy()
             mainUI()
-# reg button
+
+    # reg button
     regButton = tkinter.Button(
         reg, text="Register", command=combinedFunc).grid(row=4, column=0)
 
     reg.mainloop()
 
+
 # MAIN UI
 
 def mainUI():
     def Login(username, password):
-        if((username.get()) == "a" and (password.get()) == "a"):
+        if ((username.get()) == "a" and (password.get()) == "a"):
             tkinter.messagebox.showinfo(
                 "WELCOME", "Welcome back, admin!")
-        # CHẠY UI ADMIN
+            # CHẠY UI ADMIN
             mainUI.destroy()
             adminUI()
             return
@@ -235,17 +244,17 @@ def mainUI():
             aUsers = getLogin()
             i = 0
             for i in range(len(aUsers)):
-                if(aUsers[i][0] == username.get() and aUsers[i][1] == password.get()):
+                if (aUsers[i][0] == username.get() and aUsers[i][1] == password.get()):
                     tkinter.messagebox.showinfo(
-                        "WELCOME", "Welcome back "+username.get())
+                        "WELCOME", "Welcome back " + username.get())
                     mainUI.destroy()
-                # CHẠY UI USER
+                    # CHẠY UI USER
                     userUI()
                     return
-                elif(aUsers[i][0] == username.get()):
+                elif (aUsers[i][0] == username.get()):
                     tkinter.messagebox.showerror(
                         "ERROR", "Wrong password! Please try again")
-                if(i == len(aUsers)-1):
+                if (i == len(aUsers) - 1):
                     tkinter.messagebox.showerror(
                         "ERROR", "Invalid Login info, please create a new one")
                     mainUI.destroy()
@@ -260,14 +269,14 @@ def mainUI():
     welcomeLabel = tkinter.Label(
         mainUI, text="WELCOME TO WEATHER APP", bg='light blue').grid(row=0, column=0)
 
-# username label and text entry box
+    # username label and text entry box
     usernameLabel = tkinter.Label(
         mainUI, text="Username", bg='pink').grid(row=1, column=0)
     username = tkinter.StringVar()
     usernameEntry = tkinter.Entry(
         mainUI, textvariable=username).grid(row=1, column=1)
 
-# password label and password entry box
+    # password label and password entry box
     passwordLabel = tkinter.Label(
         mainUI, text="Password", bg='pink').grid(row=2, column=0)
     password = tkinter.StringVar()
@@ -276,7 +285,7 @@ def mainUI():
 
     validateLogin = partial(Login, username, password)
 
-# login button
+    # login button
     loginButton = tkinter.Button(
         mainUI, text="Login", bg="yellow", command=validateLogin).grid(row=1, column=2)
 
