@@ -20,31 +20,20 @@ def accept_incoming_connections():
     while True:
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
-        client.send(
-            bytes("Greetings from the cave!", "utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
     if login(client)==1:
-        client.send(
-            bytes("Now type your name", "utf8"))
-        name = client.recv(BUFSIZ).decode("utf8")
-        welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
+        welcome = 'Welcome! If you ever want to quit, type {quit} to exit.' 
         client.send(bytes(welcome, "utf8"))
-        # msg = "%s has joined the chat!" % name
-        # broadcast(bytes(msg, "utf8"))
-        clients[client] = name
         while True:
             try:
                 msg = client.recv(BUFSIZ)
                 if msg != bytes("{quit}", "utf8"):  
                     print("Recieve message: "+ msg.decode("utf8"))
-                    # broadcast(msg, name+": ")
                     function(msg.decode("utf8"),client)
                 else:
-                    #client.send(bytes("{quit}", "utf8"))
-                    # broadcast(bytes("%s has left the chat." % name, "utf8"))
                     del clients[client]
                     client.close()
                     break
@@ -58,17 +47,31 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
     for sock in clients:
         sock.send(bytes(prefix+" "+msg, "utf8"))
 
-def remove(client): 
-    if client in clients: 
-        clients.remove(client) 
 def login(client):
     client.send(
-            bytes("Now type your username and press enter!", "utf8"))
-    username = client.recv(BUFSIZ).decode("utf8")
-    client.send(
-            bytes("Now type your password and press enter!", "utf8"))
-    password = client.recv(BUFSIZ).decode("utf8")
-    return 1
+            bytes("Now type your username and password and press login!", "utf8"))
+    log = client.recv(BUFSIZ).decode("utf8")
+    split = log.split()
+    user=split[1]
+    pas=split[2]   
+    if check_login(user,pas)==1:
+        return 1
+    return 0
+def check_login(user, pas):
+    loginFile = open('user.txt')
+    Lines = loginFile.readlines()
+    aUsers = []
+    tmp = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        aUsers.append([(j) for j in split])
+    i = 0
+    for i in range(len(aUsers)):
+        if(aUsers[i][0] == user and aUsers[i][1] == pas):
+            return 1
+    return 0
+
 def function(msg, client):
     client.send(
             bytes("Here is your data you're finding: ", "utf8"))
