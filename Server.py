@@ -15,7 +15,6 @@ SERVER.bind((HOST, PORT))
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
-
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
@@ -25,8 +24,6 @@ def accept_incoming_connections():
             bytes("Greetings from the cave!", "utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
-
-
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
     if login(client)==1:
@@ -39,28 +36,27 @@ def handle_client(client):  # Takes client socket as argument.
         # broadcast(bytes(msg, "utf8"))
         clients[client] = name
         while True:
-            msg = client.recv(BUFSIZ)
-            if msg:
+            try:
+                msg = client.recv(BUFSIZ)
                 if msg != bytes("{quit}", "utf8"):  
                     print("Recieve message: "+ msg.decode("utf8"))
                     # broadcast(msg, name+": ")
-                    function(msg,client)
+                    function(msg.decode("utf8"),client)
                 else:
                     #client.send(bytes("{quit}", "utf8"))
-                    client.close()
-                    del clients[client]  #name
-                    remove(client)
                     # broadcast(bytes("%s has left the chat." % name, "utf8"))
+                    del clients[client]
+                    client.close()
                     break
-            else:
-                remove(client)
+            except:
+                continue
     else:
         register(client)
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
     for sock in clients:
-        sock.send(bytes(prefix, "utf8")+msg)
+        sock.send(bytes(prefix+" "+msg, "utf8"))
 
 def remove(client): 
     if client in clients: 
@@ -77,7 +73,6 @@ def function(msg, client):
     client.send(
             bytes("Here is your data you're finding: ", "utf8"))
 def register(client):
-
     handle_client(client)
 if __name__ == "__main__":
     SERVER.listen(5)
