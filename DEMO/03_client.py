@@ -5,7 +5,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter
 
-HOST = '127.0.0.1'
+HOST = '172.16.0.21'
 PORT = 7701
 
 if not PORT:

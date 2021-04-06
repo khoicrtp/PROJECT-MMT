@@ -16,59 +16,22 @@ def receive():
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
-            tkinter.messagebox.showinfo(
-                "GET", msg)
-        except OSError:  # Possibly client has left the chat.
+            tkinter.messagebox.showinfo("GET ", msg)
+        except OSError:  
             break
-
-def send_message(msg):  # event is passed by binders.
-    """Handles sending of messages."""
-    client_socket.sendall(bytes(msg, "utf8"))
-    if msg == "quit":
-        client_socket.close()
-        top.quit()
 
 def send(str):  # event is passed by binders.
     """Handles sending of messages."""
     client_socket.sendall(bytes(str, "utf8"))
-
-
+    if str == "{quit}":
+        client_socket.close()
+        
 
 def on_closing(event=None):
-    """This function is to be called when the window is closed."""
-    my_msg.set("quit")
-    send()
+    """This function is to be called when the window is closed."""  
+    send("quit")
 
 def mainUI():
-    def Login(username, password):
-        if((username.get()) == "a" and (password.get()) == "a"):
-            tkinter.messagebox.showinfo(
-                "WELCOME", "Welcome back, admin!")
-        # CHẠY UI ADMIN
-            mainUI.destroy()
-            adminUI()
-            return
-        else:
-            aUsers = getLogin()
-            i = 0
-            for i in range(len(aUsers)):
-                if(aUsers[i][0] == username.get() and aUsers[i][1] == password.get()):
-                    tkinter.messagebox.showinfo(
-                        "WELCOME", "Welcome back "+username.get())
-                    mainUI.destroy()
-                # CHẠY UI USER
-                    userUI()
-                    return
-                elif(aUsers[i][0] == username.get()):
-                    tkinter.messagebox.showerror(
-                        "ERROR", "Wrong password! Please try again")
-                if(i == len(aUsers)-1):
-                    tkinter.messagebox.showerror(
-                        "ERROR", "Invalid Login info, please create a new one")
-                    mainUI.destroy()
-                    registerUI()
-                    return
-
     def sendLogin(username, password):
         str="L "+username.get() + " " + password.get()
         print(str)
@@ -108,7 +71,7 @@ def mainUI():
 
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedFunc).grid(row=2, column=2)
-
+    mainUI.protocol("WM_DELETE_WINDOW", on_closing)
     mainUI.mainloop()
 
 
@@ -135,6 +98,4 @@ server_address = (HOST, PORT)
 
 receive_thread = Thread(target=receive)
 receive_thread.start()
-
-
 mainUI()
