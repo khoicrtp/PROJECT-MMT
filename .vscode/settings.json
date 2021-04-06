@@ -1,5 +1,9 @@
 {
-    "python.pythonPath": "C:\\Users\\datle\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+<<<<<<< Updated upstream
+    "python.pythonPath": "/usr/bin/python3",
+=======
+    "python.pythonPath": "C:\\Users\\bachm\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+>>>>>>> Stashed changes
     "sqltools.connections": [
         {
             "mysqlOptions": {
