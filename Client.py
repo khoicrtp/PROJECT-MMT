@@ -17,7 +17,7 @@ def receive():
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
             tkinter.messagebox.showinfo("GET ", msg)
-        except OSError:  # Possibly client has left the chat.
+        except OSError:  
             break
 
 def send(str):  # event is passed by binders.
@@ -25,7 +25,7 @@ def send(str):  # event is passed by binders.
     client_socket.sendall(bytes(str, "utf8"))
     if str == "{quit}":
         client_socket.close()
-        mainUI.quit()
+        
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""  
