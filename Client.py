@@ -29,7 +29,7 @@ def send(str):  # event is passed by binders.
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""  
-    send("quit")
+    send("{quit}")
 
 def mainUI():
     def sendLogin(username, password):

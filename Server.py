@@ -34,7 +34,7 @@ def handle_client(client):  # Takes client socket as argument.
                 client.close()
                 break
         except:
-            break
+            continue
         split = log.split()
         code = split[0] # L or R
         user=split[1]
