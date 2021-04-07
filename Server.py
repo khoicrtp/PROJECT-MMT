@@ -34,13 +34,13 @@ def handle_client(client):  # Takes client socket as argument.
                 client.close()
                 break
         except:
-            continue
+            break
         split = log.split()
         code = split[0] # L or R
         user=split[1]
         pas=split[2]
         if code=="L" and login(user, pas)==1:
-            client.send(bytes("STATUS! Login successful.", "utf8"))
+            client.send(bytes("LS", "utf8"))
             while True:
                 msg = client.recv(BUFSIZ).decode("utf8")
                 if msg != "{logout}" :  
@@ -48,14 +48,15 @@ def handle_client(client):  # Takes client socket as argument.
                     function(msg,client)
                 else:
                     break    
+        
         elif code=="L" and login(user, pas)==0:  
-            client.send(bytes("ERROR! Wrong username or password. Login again :v", "utf8"))
+            client.send(bytes("LUS", "utf8"))
         elif code=="R" and register(user, pas)==0:
-            client.send(bytes("ERROR! The username is registered. Please try with another username.", "utf8"))
+            client.send(bytes("RUS", "utf8"))
         elif code=="R" and register(user, pas)==1:
-            client.send(bytes("STATUS! Registration completed!", "utf8"))
+            client.send(bytes("RS", "utf8"))
         else:
-            client.send(bytes("Check again!", "utf8"))
+            client.send(bytes("C", "utf8"))
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
