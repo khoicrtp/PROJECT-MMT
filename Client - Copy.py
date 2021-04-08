@@ -6,11 +6,11 @@ import tkinter
 from array import *
 import tkinter
 from tkinter import messagebox
-from functools import partial
+#from functools import partial
 import os
 import datetime
 
-globalMsg="LS"
+globalMsg=""
 def printAll():
     file = open('weather.txt')
 
@@ -83,10 +83,10 @@ def userUI():
     findEntry = tkinter.Entry(
         ui, textvariable=find).grid(row=1, column=3)
 
-    validateFind = partial(printFind, find)
+    #validateFind = partial(printFind, find)
 
     findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=validateFind).grid(row=1, column=7)
+        ui, text="Find", bg="yellow", command=printFind(find)).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
@@ -140,11 +140,11 @@ def mainUI():
     passwordEntry = tkinter.Entry(
         mainUI, textvariable=password, show='*').grid(row=2, column=1)
 
-    validateLogin = partial(sendLogin, username, password)
+    #validateLogin = partial(sendLogin, username, password)
     def combinedLog():
-        validateLogin
+        sendLogin(username,password)
         modeFilter(globalMsg)
-        mainUI.destroy()
+        #mainUI.destroy()
 
 # login button
     loginButton = tkinter.Button(
@@ -199,12 +199,10 @@ def receive():
                 globalMsg=""
             else:
                 msg = client_socket.recv(BUFSIZ).decode("utf8")
-                print(msg)
 
             #tkinter.messagebox.showinfo("GET ", msg)
         except OSError:  
             break
-
 
 receive_thread = Thread(target=receive)
 receive_thread.start()
