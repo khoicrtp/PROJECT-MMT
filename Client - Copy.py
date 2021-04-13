@@ -102,18 +102,16 @@ def userUI():
 
     ui.mainloop()
 
-
-
 def send(str):  # event is passed by binders.
     """Handles sending of messages."""
     client_socket.sendall(bytes(str, "utf8"))
-    if str == "{quit}":
+    if str == "quit":
         client_socket.close()
         
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""  
-    send("{quit}")
+    send("quit")
 
 def mainUI():
     def sendLogin(username, password):
@@ -192,6 +190,10 @@ def modeFilter(str):
         tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
         userUI()
         return 1
+    elif str=="LUS":
+        tkinter.messagebox.showinfo("STATUS","LOGIN UNSUCCESSFULLY")
+        return 1
+    
 
 def receive():
     """Handles receiving of messages."""
