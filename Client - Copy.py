@@ -92,7 +92,7 @@ def userUI():
         ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
-        tkinter.messagebox.showinfo(5
+        tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
         ui.destroy()
         mainUI()
@@ -102,18 +102,16 @@ def userUI():
 
     ui.mainloop()
 
-
-
 def send(str):  # event is passed by binders.
     """Handles sending of messages."""
     client_socket.sendall(bytes(str, "utf8"))
-    if str == "{quit}":
+    if str == "quit":
         client_socket.close()
         
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""  
-    send("{quit}")
+    send("quit")
 
 def mainUI():
     def sendLogin(username, password):
@@ -188,6 +186,10 @@ def modeFilter(str):
         tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
         userUI()
         return 1
+    elif str=="LUS":
+        tkinter.messagebox.showinfo("STATUS","LOGIN UNSUCCESSFULLY")
+        return 1
+    
 
 def receive():
     """Handles receiving of messages."""
@@ -197,8 +199,9 @@ def receive():
             print(globalMsg)
             
             if(len(globalMsg)!=0):
-                modeFilter(globalMsg)
+                msg=globalMsg
                 globalMsg=""
+                modeFilter(msg)
             else:
                 globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
 
