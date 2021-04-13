@@ -89,10 +89,10 @@ def userUI():
         printFind(find)
 
     findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
+       ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
-        tkinter.messagebox.showinfo(5
+        tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
         ui.destroy()
         mainUI()
@@ -145,9 +145,9 @@ def mainUI():
 
     #validateLogin = partial(sendLogin, username, password)
     def combinedLog():
+        mainUI.destroy()
         sendLogin(username,password)
-        modeFilter(globalMsg)
-        #mainUI.destroy()
+        #modeFilter(globalMsg)
 
 # login button
     loginButton = tkinter.Button(
@@ -185,6 +185,10 @@ server_address = (HOST, PORT)
 
 def modeFilter(str):
     if str=="LS":
+        #HIDE THE WINDOW BEFORE
+        master = tkinter.Tk()
+        master.withdraw()
+            
         tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
         userUI()
         return 1
@@ -197,12 +201,14 @@ def receive():
             print(globalMsg)
             
             if(len(globalMsg)!=0):
-                modeFilter(globalMsg)
+                msg=globalMsg
                 globalMsg=""
+                modeFilter(msg)
             else:
                 globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
+            
+            #tkinter.messagebox.showinfo("GET ", globalMsg)
 
-            #tkinter.messagebox.showinfo("GET ", msg)
         except OSError:  
             break
 
