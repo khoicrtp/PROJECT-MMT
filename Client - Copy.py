@@ -84,12 +84,15 @@ def userUI():
         ui, textvariable=find).grid(row=1, column=3)
 
     #validateFind = partial(printFind, find)
+    
+    def combinedFind():
+        printFind(find)
 
     findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=printFind(find)).grid(row=1, column=7)
+        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
-        tkinter.messagebox.showinfo(
+        tkinter.messagebox.showinfo(5
             "Goodbye", "Thank you for using my team's app!")
         ui.destroy()
         mainUI()
@@ -152,14 +155,13 @@ def mainUI():
 
     def combinedReg():
         mainUI.destroy()
-        modeFilter(globalMsg)
-        #registerUI()
+        #modeFilter(globalMsg)
+        registerUI()
 
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
     mainUI.protocol("WM_DELETE_WINDOW", on_closing)
     mainUI.mainloop()
-
 
 
 #----Now comes the sockets part----
@@ -198,7 +200,7 @@ def receive():
                 modeFilter(globalMsg)
                 globalMsg=""
             else:
-                msg = client_socket.recv(BUFSIZ).decode("utf8")
+                globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
 
             #tkinter.messagebox.showinfo("GET ", msg)
         except OSError:  
