@@ -38,8 +38,8 @@ def printAll():
 
 
 ########################################
-def getLogin():
-    loginFile = open('user.txt')
+def getFile(filename):
+    loginFile = open(filename)
     Lines = loginFile.readlines()
 
     aUsers = []
@@ -48,21 +48,105 @@ def getLogin():
         tmp = Lines[i]
         split = tmp.split()
         aUsers.append([(j) for j in split])
+    
+    loginFile.close()
     return aUsers
+
+def writeFile(strFile, str):
+    file = open(strFile, "r")
+    
+    str+='\n'
+    Lines = file.readlines()
+    Lines.append(str)
+    #print(Lines)
+    file.close()
+    
+    file = open(strFile, "w")
+    file.writelines(Lines)
+    file.close()
 
 
 # ADMIN UI
 
-
-def updateUser():
-    os.system("user.txt")
-    # os.system("xdg-open user.txt")
+def viewNotepad(filename):
+    os.system(filename)
 
 
-def updateData():
-    os.system("weather.txt")
-    # os.system("xdg-open weather.txt")
+def getFile(filename):
+    loginFile = open(filename)
+    Lines = loginFile.readlines()
 
+    aUsers = []
+    tmp = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        aUsers.append([(j) for j in split])
+    
+    loginFile.close()
+    return aUsers
+
+def writeFileStr(strFile, str):
+    file = open(strFile, "r")
+    
+    str+='\n'
+    Lines = file.readlines()
+    Lines.append(str)
+    #print(Lines)
+    file.close()
+    
+    file = open(strFile, "w")
+    file.writelines(Lines)
+    file.close()
+
+def updateWeatherUI():
+    def updateWeather(id,city,weather,date):
+        str=id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
+        print(str)
+        writeFileStr("weather.txt",str)
+    
+    ui = tkinter.Tk()
+    ui.geometry("600x300")
+    ui.title("UPDATE WEATHER DATA")
+    ui.configure(bg='light blue')
+    
+    IDLabel = tkinter.Label(
+    ui, text="ID", bg='pink').grid(row=0, column=0)
+    ID = tkinter.StringVar()
+    IDEntry = tkinter.Entry(
+        ui, textvariable=ID).grid(row=0, column=1)
+    
+    cityLabel = tkinter.Label(
+    ui, text="City", bg='pink').grid(row=1, column=0)
+    city = tkinter.StringVar()
+    cityEntry = tkinter.Entry(
+        ui, textvariable=city).grid(row=1, column=1)
+    
+    weatherLabel = tkinter.Label(
+    ui, text="Weather", bg='pink').grid(row=2, column=0)
+    weather = tkinter.StringVar()
+    weatherEntry = tkinter.Entry(
+        ui, textvariable=weather).grid(row=2, column=1)
+
+    dateLabel = tkinter.Label(
+    ui, text="Date", bg='pink').grid(row=3, column=0)
+    date = tkinter.StringVar()
+    dateEntry = tkinter.Entry(
+        ui, textvariable=date).grid(row=3, column=1)
+    
+    def updateCombined():
+        updateWeather(ID,city,weather,date)
+    
+    def viewNotepadCombined():
+        viewNotepad("weather.txt")
+        
+    updateDataButton = tkinter.Button(
+        ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
+    viewNotepadButton = tkinter.Button(
+        ui, text="View data", bg='light green', command=viewNotepadCombined).grid(row=5, column=2)
+    
+    ui.mainloop()
+    
 
 def adminUI():
     ui = tkinter.Tk()
@@ -70,15 +154,23 @@ def adminUI():
     ui.title("ADMINISTRATOR")
     ui.configure(bg='light blue')
 
-    updateDataButton = tkinter.Button(
-        ui, text="Update weather data", bg='yellow', command=updateData).grid(row=0, column=0)
-    changeUserButton = tkinter.Button(
-        ui, text="Update user's info", bg='light green', command=updateUser).grid(row=0, column=1)
 
     def combinedLog():
         ui.destroy()
         mainUI()
 
+    def combinedUpdate():
+        ui.destroy()
+        updateWeatherUI()
+    
+
+    updateDataButton = tkinter.Button(
+        ui, text="Update weather data", bg='yellow', command=combinedUpdate).grid(row=0, column=0)
+    
+    changeUserButton = tkinter.Button(
+        ui, text="Update user's info", bg='light green', command=updateUser).grid(row=0, column=1)
+
+    
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=0, column=10)
     ui.mainloop()
