@@ -14,7 +14,12 @@ SERVER.bind((HOST, PORT))
 
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
+<<<<<<< HEAD
 #login
+=======
+
+
+>>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8
 def getFile(filename):
     loginFile = open(filename)
     Lines = loginFile.readlines()
@@ -25,18 +30,55 @@ def getFile(filename):
         tmp = Lines[i]
         split = tmp.split()
         aUsers.append([(j) for j in split])
-    
+
     loginFile.close()
     return aUsers
 
+<<<<<<< HEAD
+=======
+
+def writeFileStr(strFile, str):
+    file = open(strFile, "r")
+
+    str += '\n'
+    Lines = file.readlines()
+    Lines.append(str)
+    # print(Lines)
+    file.close()
+
+    file = open(strFile, "w")
+    file.writelines(Lines)
+    file.close()
+
+
+def rewriteFile(strFile, a):
+    file = open(strFile, "w")
+    lines = []
+    for i in range(len(a)):
+        lines.append(a[i][0]+" "+a[i][1])
+    file.writelines(lines)
+    file.close()
+
+
+>>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8
 def login(usr, pwd):
     print("login--")
-    aUsers=getFile("user.txt")  
+    aUsers = getFile("user.txt")
     for i in range(len(aUsers)):
         if(aUsers[i][0] == usr and aUsers[i][1] == pwd):
             return 1
     return 0
+<<<<<<< HEAD
 #Register
+=======
+
+
+def function(client):
+    client.send(
+        bytes("Here is your data you're finding: ", "utf8"))
+
+
+>>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8
 def register(Rusername, Rpassword):
     info = open("user.txt", "r")
     Lines = info.readlines()
@@ -57,6 +99,7 @@ def register(Rusername, Rpassword):
         fout.write(Lines[i])
     return 1
 
+
 def checkValid(a, username):
     for i in range(len(a)):
         if (a[i][0] == username.get()):
@@ -75,29 +118,41 @@ def accept_incoming_connections():
         print("%s:%s has connected." % client_address)
         addresses[client] = client_address
         Thread(target=receive, args=(client,)).start()
+
+
 def receive(client):
+<<<<<<< HEAD
     globalMsg=""    
     aUsers=getFile("user.txt")
+=======
+    globalMsg = ""
+
+    aUsers = getFile("user.txt")
+    print(aUsers)
+>>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8
     while True:
         try:
-            print(globalMsg)  
-            if globalMsg=="{quit}":
+            print(globalMsg)
+            if globalMsg == "{quit}":
                 print("%s:%s left." % addresses[client])
                 del addresses[client]
                 client.close()
-                break  
-            if(len(globalMsg)!=0):
+                break
+            if(len(globalMsg) != 0):
                 handle_client(client, globalMsg)
-                globalMsg=""
+                globalMsg = ""
             else:
                 globalMsg = client.recv(BUFSIZ).decode("utf8")
-        except OSError:  
+        except OSError:
             break
+
+
 def handle_client(client, globalMsg):  # Takes client socket as argument.
     """Handles a single client connection."""
     print(globalMsg)
     split = globalMsg.split()
     code = split[0]
+<<<<<<< HEAD
     if code=="F":
         if globalMsg != "logout" :  
             print("Recieve message: "+ globalMsg)
@@ -106,16 +161,31 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
     user=split[1]
     pas=split[2]
     if code=="L" and login(user, pas)==1:
+=======
+    if code == "LS":
+        if globalMsg != "{logout}":
+            print("Recieve message: " + globalMsg)
+            function(client)
+     # L or R
+    print(code)
+    user = split[1]
+    pas = split[2]
+    print('user'+code)
+    print(user)
+    print(pas)
+    if code == "L" and login(user, pas) == 1:
+>>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8
         print("OK")
-        client.send(bytes("LS", "utf8")) 
-    elif code=="L" and login(user, pas)==0:  
+        client.send(bytes("LS", "utf8"))
+    elif code == "L" and login(user, pas) == 0:
         client.send(bytes("LUS", "utf8"))
-    elif code=="R" and register(user, pas)==0:
+    elif code == "R" and register(user, pas) == 0:
         client.send(bytes("RUS", "utf8"))
-    elif code=="R" and register(user, pas)==1:
+    elif code == "R" and register(user, pas) == 1:
         client.send(bytes("RS", "utf8"))
     else:
         client.send(bytes("C", "utf8"))
+
 
 if __name__ == "__main__":
     SERVER.listen(5)
