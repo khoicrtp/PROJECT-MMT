@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Server for multithreaded (asynchronous) chat application."""
+"""Server for multithreaded (asynchronous) chat application.c"""
 from socket import*
 from threading import Thread
 
