@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-"""Script for Tkinter GUI chat client."""
 from socket import *
 from threading import Thread
 import tkinter
@@ -11,7 +9,7 @@ import os
 import datetime
 
 globalMsg = ""
-flag = ""
+flag = 0
 
 ########################################
 
@@ -62,6 +60,8 @@ def userUI():
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
+        global flag
+        flag = 0
         ui.destroy()
         mainUI()
 
@@ -164,6 +164,7 @@ def mainUI():
         pwd = password
 
         sendLogin(usr, pwd)
+        #os.system('taskkill /F /FI "WINDOWTITLE eq LOGIN"')
         # userUI()
         # modeFilter(globalMsg)
 
@@ -196,9 +197,13 @@ else:
 
 def handle_UI():
     global flag
-    mainUI()
-    if(flag == 1):
-        userUI()
+    while flag != -1:
+        if flag == 0:
+            mainUI()
+        if(flag == 1):
+            print(flag)
+            userUI()
+
 
     # Create a TCP/IP socket
 ADDR = (HOST, PORT)
@@ -210,6 +215,3 @@ receive_thread.start()
 
 UI_thread = Thread(target=handle_UI)
 UI_thread.start()
-
-# mainUI()
-# userUI()
