@@ -14,7 +14,9 @@ SERVER.bind((HOST, PORT))
 
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
-#login
+# login
+
+
 def getFile(filename):
     loginFile = open(filename)
     Lines = loginFile.readlines()
@@ -29,6 +31,7 @@ def getFile(filename):
     loginFile.close()
     return aUsers
 
+
 def login(usr, pwd):
     print("login--")
     aUsers = getFile("user.txt")
@@ -36,7 +39,9 @@ def login(usr, pwd):
         if(aUsers[i][0] == usr and aUsers[i][1] == pwd):
             return 1
     return 0
-#Register
+# Register
+
+
 def register(Rusername, Rpassword):
     info = open("user.txt", "r")
     Lines = info.readlines()
@@ -63,7 +68,9 @@ def checkValid(a, username):
         if (a[i][0] == username.get()):
             return 0
     return 1
-#Function
+# Function
+
+
 def printFind(find):
     file = open('weather.txt')
     Lines = file.readlines()
@@ -85,10 +92,10 @@ def printFind(find):
 
 
 def function(client, info):
-    msg=printFind(info)
+    msg = printFind(info)
     client.send(
-            bytes("F "+msg, "utf8"))
- 
+        bytes("F "+msg, "utf8"))
+
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -100,8 +107,8 @@ def accept_incoming_connections():
 
 
 def receive(client):
-    globalMsg=""    
-    aUsers=getFile("user.txt")
+    globalMsg = ""
+    aUsers = getFile("user.txt")
     while True:
         try:
             print(globalMsg)
@@ -124,30 +131,29 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
     print(globalMsg)
     split = globalMsg.split()
     code = split[0]
-    if code=="F":
+    if code == "F":
         info = split[1]
-        if info != "" :  
-            print("Recieve message: "+ info)
+        if info != "":
+            print("Recieve message: " + info)
             function(client, info)
-    else:  
+    else:
         # Login or Register
-        user=split[1]
-        pas=split[2]
-        if code=="L":
-            print("%s:%s:" % addresses[client]+"Receive username and password are "+user +" " +pas
+        user = split[1]
+        pas = split[2]
+        if code == "L":
+            print("%s:%s : " % addresses[client]+"Receive username and password are "+user + " " + pas
                   + " to login")
-            if login(user, pas)==1:
+            if login(user, pas) == 1:
                 client.send(bytes("LS", "utf8"))
-            elif  login(user, pas) == 0:
+            elif login(user, pas) == 0:
                 client.send(bytes("LUS", "utf8"))
-        if code=="R":
-            print("%s:%s:" % addresses[client]+"Receive username and password are "+ user +" " +pas
+        if code == "R":
+            print("%s:%s : " % addresses[client]+"Receive username and password are " + user + " " + pas
                   + " to register")
             if register(user, pas) == 1:
                 client.send(bytes("RS", "utf8"))
             elif register(user, pas) == 0:
                 client.send(bytes("RUS", "utf8"))
-    
 
 
 if __name__ == "__main__":

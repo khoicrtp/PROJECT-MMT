@@ -10,14 +10,27 @@ from tkinter import messagebox
 import os
 import datetime
 
-globalMsg=""
+globalMsg = ""
 
 ########################################
+
+
+def send_server(str):  # event is passed by binders.
+    """Handles sending of messages."""
+    client_socket.sendall(bytes(str, "utf8"))
+
+
+# def on_closing(event=None):
+    """This function is to be called when the window is closed."""
+    # send_server("{quit}")
+    # client_socket.close()
+
 
 def userUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("USER")
+
     def combinedPrintAll():
         send_server("F ALL")
     listAllButton = tkinter.Button(
@@ -29,15 +42,19 @@ def userUI():
 
     findEntry = tkinter.Entry(
         ui, textvariable=findVar).grid(row=1, column=3)
-    def sendFind(findVar):
-        str="F "+findVar.get()
+
+    def sendFind(var):
+        print(var.get())
+        str = "F "+var.get()
         print(str)
         send_server(str)
-        
+
     def combinedFind():
+        ui.destroy()
         sendFind(findVar)
+
     findButton = tkinter.Button(
-       ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
+        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
@@ -50,23 +67,13 @@ def userUI():
 
     ui.mainloop()
 
-def send_server(str):  # event is passed by binders.
-    """Handles sending of messages."""
-    client_socket.sendall(bytes(str, "utf8"))
-   
-        
-
-def on_closing(event=None):
-    """This function is to be called when the window is closed."""  
-    send_server("{quit}")
-    lient_socket.close()
 
 def mainUI():
     def sendLogin(username, password):
-        str="L "+username.get() + " " + password.get()
+        str = "L "+username.get() + " " + password.get()
         print(str)
         send_server(str)
-    
+
     mainUI = tkinter.Tk()
     mainUI.geometry('600x300')
     mainUI.title('LOGIN')
@@ -92,8 +99,8 @@ def mainUI():
     #validateLogin = partial(sendLogin, username, password)
     def combinedLog():
         mainUI.destroy()
-        sendLogin(username,password)
-        #modeFilter(globalMsg)
+        sendLogin(username, password)
+        # modeFilter(globalMsg)
 
 # login button
     loginButton = tkinter.Button(
@@ -101,16 +108,73 @@ def mainUI():
 
     def combinedReg():
         mainUI.destroy()
-        #modeFilter(globalMsg)
+        # modeFilter(globalMsg)
         registerUI()
 
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
-    mainUI.protocol("WM_DELETE_WINDOW", on_closing)
+    #mainUI.protocol("WM_DELETE_WINDOW", on_closing)
     mainUI.mainloop()
 
 
-#----Now comes the sockets part----
+def modeFilter(str):
+    split = str.split()
+    code = split[0]
+    if code == "LS":
+        # HIDE THE WINDOW BEFORE
+        master = tkinter.Tk()
+        master.withdraw()
+
+        tkinter.messagebox.showinfo("STATUS", "LOGIN SUCCESSFULLY")
+        userUI()
+        return 1
+    elif code == "LUS":
+        master = tkinter.Tk()
+        master.withdraw()
+
+        tkinter.messagebox.showinfo("STATUS", "LOGIN UNSUCCESSFULLY")
+        return 1
+    elif code == "RS":
+        master = tkinter.Tk()
+        master.withdraw()
+
+        tkinter.messagebox.showinfo("STATUS", "REGISTER SUCCESSFULLY")
+        # userUI()
+        return 1
+    elif code == "RUS":
+        master = tkinter.Tk()
+        master.withdraw()
+
+        tkinter.messagebox.showinfo("STATUS", "REGISTER UNSUCCESSFULLY")
+        return 1
+    elif code == "F":
+        master = tkinter.Tk()
+        master.withdraw()
+
+        tkinter.messagebox.showinfo("INFOMATION", str[2:len(str)])
+        return 1
+
+
+def receive():
+    """Handles receiving of messages."""
+    while True:
+        try:
+            global globalMsg
+
+            if(len(globalMsg) != 0):
+                msg = globalMsg
+                globalMsg = ""
+                modeFilter(msg)
+            else:
+                globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
+
+            #tkinter.messagebox.showinfo("GET ", globalMsg)
+
+        except OSError:
+            break
+
+
+# ----Now comes the sockets part----
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65431        # The port used by the server
@@ -128,62 +192,7 @@ ADDR = (HOST, PORT)
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect(ADDR)
 server_address = (HOST, PORT)
-
-def modeFilter(str):
-    split = str.split()
-    code = split[0]
-    if code=="LS":
-        #HIDE THE WINDOW BEFORE
-        master = tkinter.Tk()
-        master.withdraw()
-            
-        tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
-        userUI()
-        return 1
-    elif code=="LUS":
-        master = tkinter.Tk()
-        master.withdraw()
-        
-        tkinter.messagebox.showinfo("STATUS","LOGIN UNSUCCESSFULLY")
-        return 1
-    elif code=="RS":
-        master = tkinter.Tk()
-        master.withdraw()
-        
-        tkinter.messagebox.showinfo("STATUS","REGISTER SUCCESSFULLY")
-        #userUI()
-        return 1
-    elif code=="RUS":
-        master = tkinter.Tk()
-        master.withdraw()
-        
-        tkinter.messagebox.showinfo("STATUS","REGISTER UNSUCCESSFULLY")
-        return 1
-    elif code=="F":
-        master = tkinter.Tk()
-        master.withdraw()
-        
-        tkinter.messagebox.showinfo("INFOMATION",str[2:len(str)])
-        return 1
-
-def receive():
-    """Handles receiving of messages."""
-    while True:
-        try:
-            global globalMsg
-            
-            if(len(globalMsg)!=0):
-                msg=globalMsg
-                globalMsg=""
-                modeFilter(msg)
-            else:
-                globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
-            
-            #tkinter.messagebox.showinfo("GET ", globalMsg)
-
-        except OSError:  
-            break
-
 receive_thread = Thread(target=receive)
 receive_thread.start()
+
 mainUI()
