@@ -48,19 +48,20 @@ def getFile(filename):
         tmp = Lines[i]
         split = tmp.split()
         aUsers.append([(j) for j in split])
-    
+
     loginFile.close()
     return aUsers
 
+
 def writeFile(strFile, str):
     file = open(strFile, "r")
-    
-    str+='\n'
+
+    str += '\n'
     Lines = file.readlines()
     Lines.append(str)
-    #print(Lines)
+    # print(Lines)
     file.close()
-    
+
     file = open(strFile, "w")
     file.writelines(Lines)
     file.close()
@@ -82,78 +83,79 @@ def getFile(filename):
         tmp = Lines[i]
         split = tmp.split()
         aUsers.append([(j) for j in split])
-    
+
     loginFile.close()
     return aUsers
 
+
 def writeFileStr(strFile, str):
     file = open(strFile, "r")
-    
-    str+='\n'
+
+    str += '\n'
     Lines = file.readlines()
     Lines.append(str)
-    #print(Lines)
+    # print(Lines)
     file.close()
-    
+
     file = open(strFile, "w")
     file.writelines(Lines)
     file.close()
 
+
 def updateWeatherUI():
-    def updateWeather(id,city,weather,date):
-        str=id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
+    def updateWeather(id, city, weather, date):
+        str = id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
         print(str)
-        writeFileStr("weather.txt",str)
-    
+        writeFileStr("weather.txt", str)
+
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("UPDATE WEATHER DATA")
     ui.configure(bg='light blue')
-    
+
     IDLabel = tkinter.Label(
-    ui, text="ID", bg='pink').grid(row=0, column=0)
+        ui, text="ID", bg='pink').grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
         ui, textvariable=ID).grid(row=0, column=1)
-    
+
     cityLabel = tkinter.Label(
-    ui, text="City", bg='pink').grid(row=1, column=0)
+        ui, text="City", bg='pink').grid(row=1, column=0)
     city = tkinter.StringVar()
     cityEntry = tkinter.Entry(
         ui, textvariable=city).grid(row=1, column=1)
-    
+
     weatherLabel = tkinter.Label(
-    ui, text="Weather", bg='pink').grid(row=2, column=0)
+        ui, text="Weather", bg='pink').grid(row=2, column=0)
     weather = tkinter.StringVar()
     weatherEntry = tkinter.Entry(
         ui, textvariable=weather).grid(row=2, column=1)
 
     dateLabel = tkinter.Label(
-    ui, text="Date", bg='pink').grid(row=3, column=0)
+        ui, text="Date", bg='pink').grid(row=3, column=0)
     date = tkinter.StringVar()
     dateEntry = tkinter.Entry(
         ui, textvariable=date).grid(row=3, column=1)
-    
+
     def updateCombined():
-        updateWeather(ID,city,weather,date)
-    
+        updateWeather(ID, city, weather, date)
+
     def viewNotepadCombined():
         viewNotepad("weather.txt")
-        
+
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
     viewNotepadButton = tkinter.Button(
         ui, text="View data", bg='light green', command=viewNotepadCombined).grid(row=5, column=2)
-    
+
     ui.mainloop()
-    
+
 
 def adminUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("ADMINISTRATOR")
     ui.configure(bg='light blue')
-
 
     def combinedLog():
         ui.destroy()
@@ -162,15 +164,13 @@ def adminUI():
     def combinedUpdate():
         ui.destroy()
         updateWeatherUI()
-    
 
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=combinedUpdate).grid(row=0, column=0)
-    
+
     changeUserButton = tkinter.Button(
         ui, text="Update user's info", bg='light green', command=updateUser).grid(row=0, column=1)
 
-    
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=0, column=10)
     ui.mainloop()
@@ -209,7 +209,7 @@ def writeToFile(a, str):
 
 
 def changeUserPass(username, password):
-    aUsers = getLogin()
+    aUsers = getFile("user.txt")
     for i in aUsers:
         if i[0] == 'username':
             i[1] = password
@@ -333,7 +333,7 @@ def mainUI():
             adminUI()
             return
         else:
-            aUsers = getLogin()
+            aUsers = getFile("user.txt")
             i = 0
             for i in range(len(aUsers)):
                 if (aUsers[i][0] == username.get() and aUsers[i][1] == password.get()):
@@ -361,7 +361,7 @@ def mainUI():
     welcomeLabel = tkinter.Label(
         mainUI, text="WELCOME TO WEATHER APP", bg='light blue').grid(row=0, column=0)
 
-    # username label and text entry box
+    # username label and text entry box4
     usernameLabel = tkinter.Label(
         mainUI, text="Username", bg='pink').grid(row=1, column=0)
     username = tkinter.StringVar()
