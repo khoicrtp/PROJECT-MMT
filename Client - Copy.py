@@ -11,89 +11,34 @@ import os
 import datetime
 
 globalMsg=""
-def printAll():
-    file = open('weather.txt')
-
-    Lines = file.readlines()
-    # read 2D-array from Lines
-    a = []
-    tmp = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        a.append([j for j in split])
-    result = ""
-    for i in range(len(a)):
-        for j in range(len(a[i])):
-            result += a[i][j] + " "
-        result += "\n"
-
-    tkinter.messagebox.showinfo("WEATHER INFORMATION", result)
-
-
-def printFind(find):
-    file = open('weather.txt')
-
-    Lines = file.readlines()
-    # read 2D-array from Lines
-    a = []
-    tmp = ""
-    result = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        a.append([(j) for j in split])
-    for i in range(len(a)):
-        for j in range(len(a[i])):
-            if a[i][j] == find.get():
-                for k in range(len(a[i])):
-                    result += a[i][k] + " "
-                result += '\n'
-
-    tkinter.messagebox.showinfo("RESULT", result)
 
 ########################################
-def getLogin():
-    loginFile = open('user.txt')
-    Lines = loginFile.readlines()
-
-    aUsers = []
-    tmp = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        aUsers.append([(j) for j in split])
-    return aUsers
-
 
 def userUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("USER")
-    ui.configure(bg='light blue')
-
+    def combinedPrintAll():
+        send_server("F ALL")
     listAllButton = tkinter.Button(
-        ui, text="All weather data", bg="light green", command=printAll).grid(row=0, column=0)
-    # findDataButton = tkinter.Button(
-    #    ui, text="Find", command=findUI).grid(row=0, column=1)
+        ui, text="All weather data", bg="light green", command=combinedPrintAll).grid(row=0, column=0)
+
     findLabel = tkinter.Label(
         ui, text="City, date, weather,...").grid(row=1, column=0)
     find = tkinter.StringVar()
 
     findEntry = tkinter.Entry(
         ui, textvariable=find).grid(row=1, column=3)
-
-    #validateFind = partial(printFind, find)
     
     def combinedFind():
-        printFind(find)
-
+        send_server("F "+find.get())
     findButton = tkinter.Button(
        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
+        send_server("logout")
         ui.destroy()
         mainUI()
 
@@ -102,22 +47,22 @@ def userUI():
 
     ui.mainloop()
 
-def send(str):  # event is passed by binders.
+def send_server(str):  # event is passed by binders.
     """Handles sending of messages."""
     client_socket.sendall(bytes(str, "utf8"))
-    if str == "quit":
-        client_socket.close()
+   
         
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""  
-    send("quit")
+    send_server("{quit}")
+    lient_socket.close()
 
 def mainUI():
     def sendLogin(username, password):
         str="L "+username.get() + " " + password.get()
         print(str)
-        send(str)
+        send_server(str)
     
     mainUI = tkinter.Tk()
     mainUI.geometry('600x300')

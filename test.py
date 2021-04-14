@@ -91,3 +91,45 @@ def updateUserUI():
 
 aUsers=getFile("user.txt")
 print(aUsers)
+
+
+def printAll():
+    file = open('weather.txt')
+
+    Lines = file.readlines()
+    # read 2D-array from Lines
+    a = []
+    tmp = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        a.append([j for j in split])
+    result = ""
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            result += a[i][j] + " "
+        result += "\n"
+
+    tkinter.messagebox.showinfo("WEATHER INFORMATION", result)
+
+
+def printFind(find):
+    file = open('weather.txt')
+
+    Lines = file.readlines()
+    # read 2D-array from Lines
+    a = []
+    tmp = ""
+    result = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        a.append([(j) for j in split])
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == find.get():
+                for k in range(len(a[i])):
+                    result += a[i][k] + " "
+                result += '\n'
+
+    tkinter.messagebox.showinfo("RESULT", result)
