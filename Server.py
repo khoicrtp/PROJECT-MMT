@@ -94,9 +94,12 @@ def accept_incoming_connections():
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
         addresses[client] = client_address
-        Thread(target=listen, args=(client,)).start()
-def listen(client):
+        Thread(target=receive, args=(client,)).start()
+def receive(client):
     globalMsg=""
+    
+    aUsers=getFile("user.txt")
+    print(aUsers)
     while True:
         try:
             print(globalMsg)  

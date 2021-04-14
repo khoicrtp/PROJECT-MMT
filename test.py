@@ -87,4 +87,7 @@ def updateUserUI():
     
     ui.mainloop()
     
-updateUserUI()
+#updateUserUI()
+
+aUsers=getFile("user.txt")
+print(aUsers)

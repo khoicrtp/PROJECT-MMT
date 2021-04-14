@@ -191,7 +191,11 @@ def modeFilter(str):
         userUI()
         return 1
     elif str=="LUS":
+        master = tkinter.Tk()
+        master.withdraw()
+        
         tkinter.messagebox.showinfo("STATUS","LOGIN UNSUCCESSFULLY")
+        userUI()
         return 1
     
 
