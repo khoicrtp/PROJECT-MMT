@@ -25,20 +25,23 @@ def userUI():
 
     findLabel = tkinter.Label(
         ui, text="City, date, weather,...").grid(row=1, column=0)
-    find = tkinter.StringVar()
+    findVar = tkinter.StringVar()
 
     findEntry = tkinter.Entry(
-        ui, textvariable=find).grid(row=1, column=3)
-    
+        ui, textvariable=findVar).grid(row=1, column=3)
+    def sendFind(findVar):
+        str="F "+findVar.get()
+        print(str)
+        send_server(str)
+        
     def combinedFind():
-        send_server("F "+find.get())
+        sendFind(findVar)
     findButton = tkinter.Button(
        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
-        send_server("logout")
         ui.destroy()
         mainUI()
 
@@ -127,7 +130,9 @@ client_socket.connect(ADDR)
 server_address = (HOST, PORT)
 
 def modeFilter(str):
-    if str=="LS":
+    split = str.split()
+    code = split[0]
+    if code=="LS":
         #HIDE THE WINDOW BEFORE
         master = tkinter.Tk()
         master.withdraw()
@@ -135,21 +140,37 @@ def modeFilter(str):
         tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
         userUI()
         return 1
-    elif str=="LUS":
+    elif code=="LUS":
         master = tkinter.Tk()
         master.withdraw()
         
         tkinter.messagebox.showinfo("STATUS","LOGIN UNSUCCESSFULLY")
-        userUI()
         return 1
-    
+    elif code=="RS":
+        master = tkinter.Tk()
+        master.withdraw()
+        
+        tkinter.messagebox.showinfo("STATUS","REGISTER SUCCESSFULLY")
+        #userUI()
+        return 1
+    elif code=="RUS":
+        master = tkinter.Tk()
+        master.withdraw()
+        
+        tkinter.messagebox.showinfo("STATUS","REGISTER UNSUCCESSFULLY")
+        return 1
+    elif code=="F":
+        master = tkinter.Tk()
+        master.withdraw()
+        
+        tkinter.messagebox.showinfo("INFOMATION",str[2:len(str)])
+        return 1
 
 def receive():
     """Handles receiving of messages."""
     while True:
         try:
             global globalMsg
-            print(globalMsg)
             
             if(len(globalMsg)!=0):
                 msg=globalMsg

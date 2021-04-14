@@ -64,9 +64,30 @@ def checkValid(a, username):
             return 0
     return 1
 #Function
-def function(client, globalMsg):
+def printFind(find):
+    file = open('weather.txt')
+    Lines = file.readlines()
+    # read 2D-array from Lines
+    a = []
+    tmp = ""
+    result = ""
+    for i in range(len(Lines)):
+        tmp = Lines[i]
+        split = tmp.split()
+        a.append([(j) for j in split])
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == find:
+                for k in range(len(a[i])):
+                    result += a[i][k] + " "
+                result += '\n'
+    return result
+
+
+def function(client, info):
+    msg=printFind(info)
     client.send(
-            bytes("Here is your data you're finding: ", "utf8"))
+            bytes("F "+msg, "utf8"))
  
 
 def accept_incoming_connections():
@@ -104,23 +125,29 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
     split = globalMsg.split()
     code = split[0]
     if code=="F":
-        if globalMsg != "logout" :  
-            print("Recieve message: "+ globalMsg)
-            function(client)   
-     # L or R
-    user=split[1]
-    pas=split[2]
-    if code=="L" and login(user, pas)==1:
-        print("OK")
-        client.send(bytes("LS", "utf8"))
-    elif code == "L" and login(user, pas) == 0:
-        client.send(bytes("LUS", "utf8"))
-    elif code == "R" and register(user, pas) == 0:
-        client.send(bytes("RUS", "utf8"))
-    elif code == "R" and register(user, pas) == 1:
-        client.send(bytes("RS", "utf8"))
-    else:
-        client.send(bytes("C", "utf8"))
+        info = split[1]
+        if info != "" :  
+            print("Recieve message: "+ info)
+            function(client, info)
+    else:  
+        # Login or Register
+        user=split[1]
+        pas=split[2]
+        if code=="L":
+            print("%s:%s:" % addresses[client]+"Receive username and password are "+user +" " +pas
+                  + " to login")
+            if login(user, pas)==1:
+                client.send(bytes("LS", "utf8"))
+            elif  login(user, pas) == 0:
+                client.send(bytes("LUS", "utf8"))
+        if code=="R":
+            print("%s:%s:" % addresses[client]+"Receive username and password are "+ user +" " +pas
+                  + " to register")
+            if register(user, pas) == 1:
+                client.send(bytes("RS", "utf8"))
+            elif register(user, pas) == 0:
+                client.send(bytes("RUS", "utf8"))
+    
 
 
 if __name__ == "__main__":
