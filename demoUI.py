@@ -37,7 +37,7 @@ def rewriteFile(strFile, a):
     file = open(strFile, "w")
     lines = []
     for i in range(len(a)):
-        lines.append(a[i][0]+" "+a[i][1])
+        lines.append(a[i][0]+" "+a[i][1]+'\n')
     file.writelines(lines)
     file.close()
 
@@ -90,8 +90,8 @@ def updateUserUI():
 
     ui.mainloop()
 
-<<<<<<< HEAD
-aUsers=getFile("user.txt")
+
+aUsers = getFile("user.txt")
 print(aUsers)
 
 
@@ -135,7 +135,6 @@ def printFind(find):
                 result += '\n'
 
     tkinter.messagebox.showinfo("RESULT", result)
-=======
+
 
 updateUserUI()
->>>>>>> 54c3cfece11f2a4b22d65af0c9b263d0164c35e8

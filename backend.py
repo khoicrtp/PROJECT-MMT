@@ -13,8 +13,7 @@ def printIndex(a, n):
         temp += " "
     print(temp)
 
-
-# print all row
+# ULTILITY
 
 
 def printAll():
@@ -36,8 +35,9 @@ def printAll():
 
     tkinter.messagebox.showinfo("WEATHER INFORMATION", result)
 
+# FILE
 
-########################################
+
 def getFile(filename):
     loginFile = open(filename)
     Lines = loginFile.readlines()
@@ -67,7 +67,16 @@ def writeFile(strFile, str):
     file.close()
 
 
+def rewriteFile(strFile, a):
+    file = open(strFile, "w")
+    lines = []
+    for i in range(len(a)):
+        lines.append(a[i][0]+" "+a[i][1]+'\n')
+    file.writelines(lines)
+    file.close()
+
 # ADMIN UI
+
 
 def viewNotepad(filename):
     os.system(filename)
@@ -151,6 +160,51 @@ def updateWeatherUI():
     ui.mainloop()
 
 
+def updateUserUI():
+    def updateUser(usr, pwd):
+        aUsers = getFile("user.txt")
+
+        for i in range(len(aUsers)):
+            if(aUsers[i][0] == usr.get()):
+                aUsers[i][1] = pwd.get()
+                rewriteFile("user.txt", aUsers)
+                return
+
+        str = usr.get()+" "+pwd.get()
+        print(str)
+        writeFileStr("user.txt", str)
+
+    ui = tkinter.Tk()
+    ui.geometry("600x300")
+    ui.title("UPDATE USER DATA")
+    ui.configure(bg='light blue')
+
+    usrLabel = tkinter.Label(
+        ui, text="USERNAME", bg='pink').grid(row=0, column=0)
+    usr = tkinter.StringVar()
+    usrEntry = tkinter.Entry(
+        ui, textvariable=usr).grid(row=0, column=1)
+
+    pwdLabel = tkinter.Label(
+        ui, text="PASSWORD", bg='pink').grid(row=1, column=0)
+    pwd = tkinter.StringVar()
+    pwdEntry = tkinter.Entry(
+        ui, textvariable=pwd).grid(row=1, column=1)
+
+    def updateCombined():
+        updateUser(usr, pwd)
+
+    def viewNotepadCombined():
+        viewNotepad("user.txt")
+
+    updateDataButton = tkinter.Button(
+        ui, text="Update user data", bg='yellow', command=updateCombined).grid(row=5, column=1)
+    viewNotepadButton = tkinter.Button(
+        ui, text="View user data", bg='light green', command=viewNotepadCombined).grid(row=5, column=2)
+
+    ui.mainloop()
+
+
 def adminUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
@@ -161,15 +215,19 @@ def adminUI():
         ui.destroy()
         mainUI()
 
-    def combinedUpdate():
+    def combinedUpdateWeather():
         ui.destroy()
         updateWeatherUI()
 
+    def combinedUpdateUser():
+        ui.destroy()
+        updateUserUI()
+
     updateDataButton = tkinter.Button(
-        ui, text="Update weather data", bg='yellow', command=combinedUpdate).grid(row=0, column=0)
+        ui, text="Update weather data", bg='yellow', command=combinedUpdateWeather).grid(row=0, column=0)
 
     changeUserButton = tkinter.Button(
-        ui, text="Update user's info", bg='light green', command=updateUser).grid(row=0, column=1)
+        ui, text="Update user's info", bg='light green', command=combinedUpdateUser).grid(row=0, column=1)
 
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=0, column=10)
