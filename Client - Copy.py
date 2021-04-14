@@ -164,6 +164,7 @@ def mainUI():
         pwd = password
 
         sendLogin(usr, pwd)
+        mainUI.destroy()
         # userUI()
         # modeFilter(globalMsg)
 
@@ -197,8 +198,9 @@ else:
 def handle_UI():
     global flag
     mainUI()
-    if(flag == 1):
-        userUI()
+    while flag != -1:
+        if(flag == 1):
+            userUI()
 
     # Create a TCP/IP socket
 ADDR = (HOST, PORT)
