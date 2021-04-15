@@ -6,87 +6,57 @@ import tkinter
 from array import *
 import tkinter
 from tkinter import messagebox
-from functools import partial
+#from functools import partial
 import os
 import datetime
 
-globalMsg=""
-def printAll():
-    file = open('weather.txt')
-
-    Lines = file.readlines()
-    # read 2D-array from Lines
-    a = []
-    tmp = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        a.append([j for j in split])
-    result = ""
-    for i in range(len(a)):
-        for j in range(len(a[i])):
-            result += a[i][j] + " "
-        result += "\n"
-
-    tkinter.messagebox.showinfo("WEATHER INFORMATION", result)
-
-
-def printFind(find):
-    file = open('weather.txt')
-
-    Lines = file.readlines()
-    # read 2D-array from Lines
-    a = []
-    tmp = ""
-    result = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        a.append([(j) for j in split])
-    for i in range(len(a)):
-        for j in range(len(a[i])):
-            if a[i][j] == find.get():
-                for k in range(len(a[i])):
-                    result += a[i][k] + " "
-                result += '\n'
-
-    tkinter.messagebox.showinfo("RESULT", result)
+globalMsg = ""
 
 ########################################
-def getLogin():
-    loginFile = open('user.txt')
-    Lines = loginFile.readlines()
 
-    aUsers = []
-    tmp = ""
-    for i in range(len(Lines)):
-        tmp = Lines[i]
-        split = tmp.split()
-        aUsers.append([(j) for j in split])
-    return aUsers
+
+def send_server(str):  # event is passed by binders.
+    """Handles sending of messages."""
+    client_socket.sendall(bytes(str, "utf8"))
+
+
+# def on_closing(event=None):
+    """This function is to be called when the window is closed."""
+    # send_server("{quit}")
+    # client_socket.close()
 
 
 def userUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("USER")
-    ui.configure(bg='light blue')
+
+    def combinedPrintAll():
+        print("F ALL")
+        send_server("F ALL")
 
     listAllButton = tkinter.Button(
-        ui, text="All weather data", bg="light green", command=printAll).grid(row=0, column=0)
-    # findDataButton = tkinter.Button(
-    #    ui, text="Find", command=findUI).grid(row=0, column=1)
+        ui, text="All weather data", bg="light green", command=combinedPrintAll).grid(row=0, column=0)
+
     findLabel = tkinter.Label(
         ui, text="City, date, weather,...").grid(row=1, column=0)
-    find = tkinter.StringVar()
+    findVar = tkinter.StringVar()
 
     findEntry = tkinter.Entry(
-        ui, textvariable=find).grid(row=1, column=3)
+        ui, textvariable=findVar).grid(row=1, column=3)
 
-    validateFind = partial(printFind, find)
+    def sendFind(var):
+        print(var)
+        str = "F "+var.get()
+        print(str)
+        send_server(str)
+
+    def combinedFind():
+        # ui.destroy()
+        sendFind(findVar)
 
     findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=validateFind).grid(row=1, column=7)
+        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
@@ -98,26 +68,64 @@ def userUI():
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=2, column=7)
 
     ui.mainloop()
+def receive():
+    """Handles receiving of messages."""
+    while True:
+        try:
+            global globalMsg
 
+            if(len(globalMsg) != 0):
+                msg = globalMsg
+                globalMsg = ""
+            else:
+                globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
 
+            #tkinter.messagebox.showinfo("GET ", globalMsg)
 
-def send(str):  # event is passed by binders.
-    """Handles sending of messages."""
-    client_socket.sendall(bytes(str, "utf8"))
-    if str == "{quit}":
-        client_socket.close()
-        
-
-def on_closing(event=None):
-    """This function is to be called when the window is closed."""  
-    send("{quit}")
-
+        except OSError:
+            break
 def mainUI():
     def sendLogin(username, password):
-        str="L "+username.get() + " " + password.get()
+        str = "L "+username.get() + " " + password.get()
         print(str)
-        send(str)
+        send_server(str)
     
+    def modeFilter(str):
+        split = str.split()
+        code = split[0]
+        if code == "LS":
+            # HIDE THE WINDOW BEFORE
+            master = tkinter.Tk()
+            master.withdraw()
+            tkinter.messagebox.showinfo("STATUS", "LOGIN SUCCESSFULLY")
+            userUI()
+        elif code == "LUS":
+            master = tkinter.Tk()
+            master.withdraw()
+
+            tkinter.messagebox.showinfo("STATUS", "LOGIN UNSUCCESSFULLY")
+            return 1
+        elif code == "RS":
+            master = tkinter.Tk()
+            master.withdraw()
+
+            tkinter.messagebox.showinfo("STATUS", "REGISTER SUCCESSFULLY")
+            # userUI()
+            return 1
+        elif code == "RUS":
+            master = tkinter.Tk()
+            master.withdraw()
+
+            tkinter.messagebox.showinfo("STATUS", "REGISTER UNSUCCESSFULLY")
+            return 1
+        elif code == "F":
+            master = tkinter.Tk()
+            master.withdraw()
+
+            tkinter.messagebox.showinfo("INFOMATION", str[2:len(str)])
+            return 1
+
+
     mainUI = tkinter.Tk()
     mainUI.geometry('600x300')
     mainUI.title('LOGIN')
@@ -142,9 +150,14 @@ def mainUI():
 
     #validateLogin = partial(sendLogin, username, password)
     def combinedLog():
-        sendLogin(username,password)
-        #modeFilter(globalMsg)
-        #mainUI.destroy()
+        usr = username
+        pwd = password
+        mainUI.destroy()
+        sendLogin(usr, pwd)
+        global globalMsg
+        msg=globalMsg
+        modeFilter(msg)
+
 
 # login button
     loginButton = tkinter.Button(
@@ -152,58 +165,36 @@ def mainUI():
 
     def combinedReg():
         mainUI.destroy()
-        modeFilter(globalMsg)
-        #registerUI()
+        # modeFilter(globalMsg)
+        registerUI()
 
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
-    mainUI.protocol("WM_DELETE_WINDOW", on_closing)
+    #mainUI.protocol("WM_DELETE_WINDOW", on_closing)
     mainUI.mainloop()
+    
 
-
-
-#----Now comes the sockets part----
+# ----Now comes the sockets part----
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65431        # The port used by the server
 BUFSIZ = 1024
 
 if not PORT:
-    1
     PORT = 33000
 else:
     PORT = int(PORT)
 
 
-# Create a TCP/IP socket
+
+    # Create a TCP/IP socket
 ADDR = (HOST, PORT)
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect(ADDR)
 server_address = (HOST, PORT)
-
-def modeFilter(str):
-    if str=="LS":
-        tkinter.messagebox.showinfo("STATUS","LOGIN SUCCESSFULLY")
-        userUI()
-        return 1
-
-def receive():
-    """Handles receiving of messages."""
-    while True:
-        try:
-            global globalMsg
-            print(globalMsg)
-            
-            if(len(globalMsg)!=0):
-                modeFilter(globalMsg)
-                globalMsg=""
-            else:
-                msg = client_socket.recv(BUFSIZ).decode("utf8")
-
-            #tkinter.messagebox.showinfo("GET ", msg)
-        except OSError:  
-            break
-
 receive_thread = Thread(target=receive)
 receive_thread.start()
+
 mainUI()
+# mainUI()
+# userUI()

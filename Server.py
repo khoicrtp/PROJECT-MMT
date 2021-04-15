@@ -33,14 +33,17 @@ def getFile(filename):
 
 
 def login(usr, pwd):
-    print("login--")
     aUsers = getFile("user.txt")
     for i in range(len(aUsers)):
         if(aUsers[i][0] == usr and aUsers[i][1] == pwd):
             return 1
     return 0
 # Register
-
+def checkValid(a, username):
+    for i in range(len(a)):
+        if (a[i][0] == username):
+            return 0
+    return 1
 
 def register(Rusername, Rpassword):
     info = open("user.txt", "r")
@@ -56,18 +59,14 @@ def register(Rusername, Rpassword):
     if checkValid(a, Rusername) == 0:
         return 0
 
-    Lines.append("\n" + Rusername.get() + " " + Rpassword.get())
+    Lines.append("\n" + Rusername+ " " + Rpassword)
     fout = open("user.txt", "w")
     for i in range(len(Lines)):
         fout.write(Lines[i])
     return 1
 
 
-def checkValid(a, username):
-    for i in range(len(a)):
-        if (a[i][0] == username.get()):
-            return 0
-    return 1
+
 # Function
 
 
@@ -138,24 +137,28 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
             function(client, info)
     else:
         # Login or Register
-        user = split[1]
-        pas = split[2]
-        if code == "L":
-            print("%s:%s : " % addresses[client]+"Receive username and password are "+user + " " + pas
-                  + " to login")
-            if login(user, pas) == 1:
-                client.send(bytes("LS", "utf8"))
-            elif login(user, pas) == 0:
+        try:
+            user = split[1]
+            pas = split[2]
+            if code == "L":
+                print("%s:%s : " % addresses[client]+"Receive username and password are "+user + " " + pas
+                    + " to login")
+                if login(user, pas) == 1:
+                    client.send(bytes("LS", "utf8"))
+                elif login(user, pas) == 0:
+                    client.send(bytes("LUS", "utf8"))
+            if code == "R":
+                print("%s:%s : " % addresses[client]+"Receive username and password are " + user + " " + pas
+                    + " to register")
+                if register(user, pas) == 1:
+                    client.send(bytes("RS", "utf8"))
+                elif register(user, pas) == 0:
+                    client.send(bytes("RUS", "utf8"))
+        except:
+            if code == "L":
                 client.send(bytes("LUS", "utf8"))
-        if code == "R":
-            print("%s:%s : " % addresses[client]+"Receive username and password are " + user + " " + pas
-                  + " to register")
-            if register(user, pas) == 1:
-                client.send(bytes("RS", "utf8"))
-            elif register(user, pas) == 0:
+            if code == "R":
                 client.send(bytes("RUS", "utf8"))
-
-
 if __name__ == "__main__":
     SERVER.listen(5)
     print("Waiting for connection...")
