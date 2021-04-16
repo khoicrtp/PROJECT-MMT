@@ -57,7 +57,7 @@ try:
             temp += str(table[i][j]) + " "
         print(temp)
 
-    insertCity('5', 'Washington')
+    insertCity(sqliteConnection, cursor, '5', 'Washington')
 
     for i in range(7):
         insertWeather(sqliteConnection, cursor, '5', 'Washington', 'Cold',
