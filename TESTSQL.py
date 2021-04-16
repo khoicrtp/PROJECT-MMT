@@ -12,15 +12,18 @@ def executeSQL(con, cur, filename):
         print("SQLite script executed successfully")
 
 
-def insertCity(con, cur, id, name):
-    query = "INSERT INTO CITY(ID, C_NAME) VALUES (" + \
-        "'" + id + "'" + ", " + "'" + name + "'" + ")"
+def insertCity(con, cur, id, name, country):
+    query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
+        "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
+
+    cur.execute(query)
+    con.commit()
 
 
-def insertWeather(con, cur, dateW, c_id, stat, temperature, ):
-    query = "INSERT INTO WEATHER(WDATE, C_ID, WSTATE, TEMP, ) VALUES (" + "'" + id + "'" + ", " + "'" + \
-        city + "'" + ", " + "'" + stat + "'" + ", " + "'" + \
-            temperature + "'" + ", " + "'" + dateW + "'"+")"
+def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
+        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
+            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
     print(query)
 
     cur.execute(query)
@@ -28,40 +31,56 @@ def insertWeather(con, cur, dateW, c_id, stat, temperature, ):
 
 
 def getWeather(con, cur):
-    query = "SELECT* FROM weather"
+    query = "SELECT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
     cursor.execute(query)
     table = cursor.fetchall()
     return table
 
 
-try:
-    print("Successfully Connected to SQLite")
+def printAllSQL(con, cur):
+    table = getWeather(con, cur)
 
-    # with open('TESTSQL.sql') as sqlite_file:
-    #    sql_script=sqlite_file.read()
-
-    #    cursor.executescript(sql_script)
-    #    print("SQLite script executed successfully")
-
-    # query="INSERT INTO weather(id,city,stat,temperature,dateW) VALUES (1,'HCM','Hot','30.1',datetime('now'))"
-
-    # insertWeather(sqliteConnection, cursor, '3', 'Cam Ranh',
-    #              'Cold', '29.3', '2021-04-16')
-    executeSQL(sqliteConnection, cursor, 'TESTSQL.sql')
-
-    table = getWeather(sqliteConnection, cursor)
-
+    result = ""
     for i in range(len(table)):
         temp = ""
         for j in range(len(table[i])):
             temp += str(table[i][j]) + " "
-        print(temp)
+        result += temp + '\n'
+    return result
 
-    insertCity(sqliteConnection, cursor, '5', 'Washington')
 
-    for i in range(7):
-        insertWeather(sqliteConnection, cursor, '5', 'Washington', 'Cold',
-                      '28.5', str('2021-04-'+str(17+i)))
+def printFindSQL(con, cur, data):
+    table = getWeather(con, cur)
+
+    result = ""
+
+    for i in range(len(table)):
+        for j in range(len(table[i])):
+            if table[i][j] == data:
+                result += str(table[i]) + '\n'
+    return result
+
+
+# def findInfo(con):
+
+try:
+    print("Successfully Connected to SQLite")
+    # TEST CASE:
+    #executeSQL(sqliteConnection, cursor, 'data.sql')
+    #insertCity(sqliteConnection, cursor, "006", "Cam Ranh", "VietNam")
+    #insertWeather(sqliteConnection, cursor, "003", '2021-4-24', 30, 35, '2')
+    #executeSQL(sqliteConnection, cursor, 'exec.sql')
+    sqliteConnection.commit()
+
+    #printAll(sqliteConnection, cursor)
+
+    #insertCity(sqliteConnection, cursor, '5', 'Washington')
+
+    # for i in range(7):
+    #    insertWeather(sqliteConnection, cursor, '5', 'Washington', 'Cold',
+    #                  '28.5', str('2021-04-'+str(17+i)))
+
+    print(printFindSQL(sqliteConnection, cursor, '004'))
 
     cursor.close()
 
