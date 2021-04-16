@@ -174,7 +174,7 @@ def updateWeatherUI():
         str = '\n' + id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
         print(str)
         writeFileStr("weather.txt", str)
-
+    
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("UPDATE WEATHER DATA")

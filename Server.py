@@ -15,8 +15,20 @@ SERVER.bind((HOST, PORT))
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 # login
+# FILE
 
-
+def writeFile(strFile, str):
+    file = open(strFile, "r")
+    str += '\n'
+    Lines = file.readlines()
+    Lines.append(str)
+    # print(Lines)
+    file.close()
+    file = open(strFile, "w")
+    file.writelines(Lines)
+    file.close()
+def append(str):
+    writeFile("history.txt",str)
 def getFile(filename):
     loginFile = open(filename)
     Lines = loginFile.readlines()
@@ -27,7 +39,6 @@ def getFile(filename):
         tmp = Lines[i]
         split = tmp.split()
         aUsers.append([(j) for j in split])
-
     loginFile.close()
     return aUsers
 
@@ -37,6 +48,10 @@ def login(usr, pwd):
     for i in range(len(aUsers)):
         if(aUsers[i][0] == usr and aUsers[i][1] == pwd):
             return 1
+    aAdmins = getFile("admin.txt")
+    for i in range(len(aAdmins)):
+        if(aAdmins[i][0] == usr and aAdmins[i][1] == pwd):
+            return 2
     return 0
 # Register
 
@@ -102,7 +117,7 @@ def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
-        print("%s:%s has connected." % client_address)
+        append("%s:%s has connected." % client_address)
         addresses[client] = client_address
         Thread(target=receive, args=(client,)).start()
 
@@ -112,9 +127,8 @@ def receive(client):
     aUsers = getFile("user.txt")
     while True:
         try:
-            print(globalMsg)
             if globalMsg == "{quit}":
-                print("%s:%s left." % addresses[client])
+                append("%s:%s left." % addresses[client])
                 del addresses[client]
                 client.close()
                 break
@@ -132,26 +146,32 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
     print(globalMsg)
     split = globalMsg.split()
     code = split[0]
-    if code == "F":
+    if code == "FIND":
         info = split[1]
         if info != "":
-            print("Recieve message: " + info)
+            append("%s:%s request to find " % addresses[client] + info+ " weather")
             function(client, info)
+    elif code=="UPDATE":
+        append("%s:%s (ADMIN) request to update " % addresses[client] + " weather")
+        client.send(bytes("US", "utf8"))
+    elif code=="ADD":
+        append("%s:%s (ADMIN) request to add " % addresses[client] + " city")
+        client.send(bytes("AS", "utf8"))  
     else:
         # Login or Register
         try:
             user = split[1]
             pas = split[2]
             if code == "L":
-                print("%s:%s : " % addresses[client]+"Receive username and password are "+user + " " + pas
-                      + " to login")
+                append("%s:%s : " % addresses[client]+"login username and password are "+user + " " + pas)
                 if login(user, pas) == 1:
-                    client.send(bytes("LS", "utf8"))
+                    client.send(bytes("LS client", "utf8"))
+                elif login(user, pas) == 2:
+                    client.send(bytes("LS admin", "utf8"))
                 elif login(user, pas) == 0:
                     client.send(bytes("LUS", "utf8"))
             if code == "R":
-                print("%s:%s : " % addresses[client]+"Receive username and password are " + user + " " + pas
-                      + " to register")
+                append("%s:%s : " % addresses[client]+"register username and password are "+user + " " + pas)
                 if register(user, pas) == 1:
                     client.send(bytes("RS", "utf8"))
                 elif register(user, pas) == 0:
@@ -194,16 +214,14 @@ def serverUI():
     #msg_list.insert(tkinter.END, msg)
     top.mainloop()
 
-
-def printServer(msg):
-    msg_list.insert(tkinter.END, msg)
-
-
 if __name__ == "__main__":
     SERVER.listen(5)
-    print("Waiting for connection...")
+    append("Waiting for connection...")
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
-
     SERVER.close()
+    #file=open("history.txt","r+")
+    #file.truncate(0)
+    #file.close()
+    

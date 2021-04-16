@@ -14,7 +14,6 @@ flag = 0
 
 ########################################
 
-
 def send_server(str):  # event is passed by binders.
     """Handles sending of messages."""
     client_socket.sendall(bytes(str, "utf8"))
@@ -49,7 +48,7 @@ def registerUI():
         reg.destroy()
     # reg button
     regButton = tkinter.Button(
-        reg, text="Register", command=combinedFunc).grid(row=4, column=0)
+        reg, text="Register", command=combinedFunc).grid(row=0, column=7)
 
     def combinedLog():
         global flag
@@ -57,8 +56,16 @@ def registerUI():
         reg.destroy()
 
     logoutButton = tkinter.Button(
-        reg, text="Login", bg='orange', command=combinedLog).grid(row=4, column=7)
+        reg, text="Login", bg='orange', command=combinedLog).grid(row=1, column=7)
+    def combinedClose():
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        reg.destroy()
 
+    closeButton = tkinter.Button(
+        reg, text="Close connection", bg="red", command=combinedClose).grid(row=2, column=7)
     def on_closing():
         """This function is to be called when the window is closed."""
         send_server("{quit}")
@@ -70,14 +77,153 @@ def registerUI():
     reg.mainloop()
 
 
+def updateWeatherUI():
+    def updateWeather(id, city, weather, date):
+        str = 'UPDATE ' + id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
+        print(str)
+        send_server( str)
+           
+    ui = tkinter.Tk()
+    ui.geometry("600x300")
+    ui.title("UPDATE WEATHER DATA")
+    ui.configure(bg='light blue')
+
+    IDLabel = tkinter.Label(
+        ui, text="ID", bg='pink').grid(row=0, column=0)
+    ID = tkinter.StringVar()
+    IDEntry = tkinter.Entry(
+        ui, textvariable=ID).grid(row=0, column=1)
+
+    cityLabel = tkinter.Label(
+        ui, text="City", bg='pink').grid(row=1, column=0)
+    city = tkinter.StringVar()
+    cityEntry = tkinter.Entry(
+        ui, textvariable=city).grid(row=1, column=1)
+
+    weatherLabel = tkinter.Label(
+        ui, text="Weather", bg='pink').grid(row=2, column=0)
+    weather = tkinter.StringVar()
+    weatherEntry = tkinter.Entry(
+        ui, textvariable=weather).grid(row=2, column=1)
+
+    dateLabel = tkinter.Label(
+        ui, text="Date", bg='pink').grid(row=3, column=0)
+    date = tkinter.StringVar()
+    dateEntry = tkinter.Entry(
+        ui, textvariable=date).grid(row=3, column=1)
+
+    def updateCombined():
+        updateWeather(ID, city, weather, date)
+
+    updateDataButton = tkinter.Button(
+        ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
+
+    def backCombined():
+        global flag
+        flag=3
+        ui.destroy()
+        
+    backButton = tkinter.Button(
+        ui, text="Back", bg='orange', command=backCombined).grid(row=5, column=3)
+    def combinedClose():
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        ui.destroy()
+
+    closeButton = tkinter.Button(
+        ui, text="Close connection", bg="red", command=combinedClose).grid(row=5, column=8)
+    def on_closing():
+        """This function is to be called when the window is closed."""
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        ui.destroy()
+    ui.protocol("WM_DELETE_WINDOW", on_closing)
+    ui.mainloop()
+
+
+def adminUI():
+    def addCity(id, city, country):
+        str = 'ADD ' + id.get()+" "+city.get()+" "+country.get()
+        print(str)
+        send_server( str)
+    admin = tkinter.Tk()
+    admin.geometry("600x300")
+    admin.title("ADMINISTRATOR")
+    admin.configure(bg='light blue')
+    IDLabel = tkinter.Label(
+        admin, text="ID", bg='pink').grid(row=0, column=0)
+    ID = tkinter.StringVar()
+    IDEntry = tkinter.Entry(
+        admin, textvariable=ID).grid(row=0, column=1)
+
+    cityLabel = tkinter.Label(
+        admin, text="City", bg='pink').grid(row=1, column=0)
+    city = tkinter.StringVar()
+    cityEntry = tkinter.Entry(
+        admin, textvariable=city).grid(row=1, column=1)
+
+    countryLabel = tkinter.Label(
+        admin, text="Country", bg='pink').grid(row=2, column=0)
+    country = tkinter.StringVar()
+    countryEntry = tkinter.Entry(
+        admin, textvariable=country).grid(row=2, column=1)
+
+    def combinedAddCity():
+        addCity(ID, city, country)
+        
+    addCityButton = tkinter.Button(
+        admin, text="Add City", bg='orange', command=combinedAddCity).grid(row=0, column=7)
+    def combinedUpdateWeather():
+        global flag
+        flag = 4
+        admin.destroy()
+    updateDataButton = tkinter.Button(
+        admin, text="Update weather data", bg='yellow', command=combinedUpdateWeather).grid(row=2, column=7)
+
+    #changeUserButton = tkinter.Button(
+    #    admin, text="Update user's info", bg='light green', command=combinedUpdateUser).grid(row=0, column=1)
+
+    def combinedLog():
+        tkinter.messagebox.showinfo(
+            "Goodbye", "Thank you for using my team's app!")
+        global flag
+        flag = 0
+        admin.destroy()
+
+    logoutButton = tkinter.Button(
+        admin, text="Logout", bg='orange', command=combinedLog).grid(row=3, column=7)
+    def combinedClose():
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        admin.destroy()
+
+    closeButton = tkinter.Button(
+        admin, text="Close connection", bg="red", command=combinedClose).grid(row=4, column=7)
+    def on_closing():
+        """This function is to be called when the window is closed."""
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        admin.destroy()
+    admin.protocol("WM_DELETE_WINDOW", on_closing)
+    admin.mainloop()
+
+
 def userUI():
     ui = tkinter.Tk()
     ui.geometry("600x300")
     ui.title("USER")
 
     def combinedPrintAll():
-        print("F ALL")
-        send_server("F ALL")
+        print("FIND ALL")
+        send_server("FIND ALL")
 
     listAllButton = tkinter.Button(
         ui, text="All weather data", bg="light green", command=combinedPrintAll).grid(row=0, column=0)
@@ -91,7 +237,7 @@ def userUI():
 
     def sendFind(var):
         print(var)
-        str = "F "+var.get()
+        str = "FIND "+var.get()
         print(str)
         send_server(str)
 
@@ -111,7 +257,15 @@ def userUI():
 
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=2, column=7)
+    def combinedClose():
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        ui.destroy()
 
+    closeButton = tkinter.Button(
+        ui, text="Close connection", bg="red", command=combinedClose).grid(row=3, column=7)
     def on_closing():
         """This function is to be called when the window is closed."""
         send_server("{quit}")
@@ -124,6 +278,7 @@ def userUI():
 
 
 def modeFilter(str):
+    print(str)
     split = str.split()
     code = split[0]
     master1 = tkinter.Tk()
@@ -132,7 +287,11 @@ def modeFilter(str):
     if code == "LS":
         tkinter.messagebox.showinfo(
             "STATUS", "LOGIN SUCCESSFULLY", master=master1)
-        flag = 1
+        who=split[1]
+        if who=="admin":
+            flag = 3
+        elif who=="client":
+            flag = 1
         return 1
     elif code == "LUS":
         tkinter.messagebox.showinfo(
@@ -151,8 +310,22 @@ def modeFilter(str):
         tkinter.messagebox.showinfo(
             "INFOMATION", str[2:len(str)], master=master1)
         return 1
-
-
+    elif code == "US":
+        tkinter.messagebox.showinfo(
+            "STATUS", "UPDATE WEATHER SUCCESSFULLY", master=master1)
+        return 1
+    elif code == "UUS":
+        tkinter.messagebox.showinfo(
+            "STATUS", "UPDATE WEATHER UNSUCCESSFULLY", master=master1)
+        return 1
+    elif code == "AS":
+        tkinter.messagebox.showinfo(
+            "STATUS", "ADD CITY SUCCESSFULLY", master=master1)
+        return 1
+    elif code == "AUS":
+        tkinter.messagebox.showinfo(
+            "STATUS", "ADD CITY UNSUCCESSFULLY", master=master1)
+        return 1
 def receive():
     """Handles receiving of messages."""
     while True:
@@ -216,6 +389,15 @@ def mainUI():
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
 
+    def combinedClose():
+        send_server("{quit}")
+        client_socket.close()
+        global flag
+        flag = -1
+        mainUI.destroy()
+
+    closeButton = tkinter.Button(
+        mainUI, text="Close connection", bg="red", command=combinedClose).grid(row=3, column=2)
     def on_closing():
         """This function is to be called when the window is closed."""
         send_server("{quit}")
@@ -251,6 +433,10 @@ def handle_UI():
         print(flag)
         if(flag == 2):
             registerUI()
+        if(flag == 3):
+            adminUI()   
+        if(flag == 4):
+            updateWeatherUI()
 
 
 # Create a TCP/IP socket
