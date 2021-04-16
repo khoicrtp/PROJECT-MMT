@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Server for multithreaded (asynchronous) chat application.c"""
-import tkinter
 from socket import*
 from threading import Thread
 
@@ -165,17 +164,9 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
 
 
 def serverUI():
-    global top
-
-
-# def printServer(msg):
-#    msg_list.insert(tkinter.END, msg)
-
-if __name__ == "__main__":
-    #UI_THREAD = Thread(target=serverUI)
-    # UI_THREAD.start()
     top = tkinter.Tk()
     top.title("Chatter")
+
     messages_frame = tkinter.Frame(top)
     my_msg = tkinter.StringVar()  # For the messages to be sent.
 
@@ -200,11 +191,19 @@ if __name__ == "__main__":
     send_button = tkinter.Button(top, text="Test", command=test)
     send_button.pack()
 
-    SERVER.listen(5)
-    msg_list.insert(tkinter.END, "Waiting for connection...")
+    #msg_list.insert(tkinter.END, msg)
+    top.mainloop()
 
+
+def printServer(msg):
+    msg_list.insert(tkinter.END, msg)
+
+
+if __name__ == "__main__":
+    SERVER.listen(5)
+    print("Waiting for connection...")
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
-    top.mainloop()
+
     SERVER.close()

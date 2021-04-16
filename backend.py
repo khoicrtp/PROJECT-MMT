@@ -1,3 +1,4 @@
+import sqlite3
 from array import *
 import tkinter
 from tkinter import messagebox
@@ -13,7 +14,64 @@ def printIndex(a, n):
         temp += " "
     print(temp)
 
+
+# SQL
+
+sqliteConnection = sqlite3.connect('weatherTest.db')
+cursor = sqliteConnection.cursor()
+
+
+def executeSQL(con, cur, filename):
+    with open(filename) as sqlite_file:
+        sql_script = sqlite_file.read()
+
+        cursor.executescript(sql_script)
+        print("SQLite script executed successfully")
+
+
+def insertWeather(con, cur, id, city, stat, temperature, dateW):
+    query = "INSERT INTO weather(id, city, stat, temperature, dateW) VALUES (" + "'" + id + "'" + ", " + "'" + \
+        city + "'" + ", " + "'" + stat + "'" + ", " + "'" + \
+            temperature + "'" + ", " + "'" + dateW + "'"+")"
+    print(query)
+
+    cur.execute(query)
+    con.commit()
+
+
+def getWeather(con, cur):
+    query = "SELECT* FROM weather"
+    cursor.execute(query)
+    table = cursor.fetchall()
+    return table
+
+
 # ULTILITY
+def printAllSQL():
+    table = getWeather(sqliteConnection, cursor)
+
+    result = ""
+    for i in range(len(table)):
+        temp = ""
+        for j in range(len(table[i])):
+            temp += str(table[i][j]) + " "
+        # print(temp)
+        result += temp+'\n'
+    print(result)
+    return(result)
+
+
+def printFindSQL(find):
+    a = getWeather(sqliteConnection, cursor)
+    result = ''
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == find.get():
+                for k in range(len(a[i])):
+                    result += str(a[i][k]) + " "
+                result += '\n'
+    print(result)
+    return result
 
 
 def printAll():
@@ -70,8 +128,9 @@ def writeFile(strFile, str):
 def rewriteFile(strFile, a):
     file = open(strFile, "w")
     lines = []
-    for i in range(len(a)):
+    for i in range(len(a)-1):
         lines.append(a[i][0]+" "+a[i][1]+'\n')
+    lines.append(a[len(a)-1][0]+" "+a[len(a)-1][1])
     file.writelines(lines)
     file.close()
 
@@ -100,7 +159,6 @@ def getFile(filename):
 def writeFileStr(strFile, str):
     file = open(strFile, "r")
 
-    str += '\n'
     Lines = file.readlines()
     Lines.append(str)
     # print(Lines)
@@ -113,7 +171,7 @@ def writeFileStr(strFile, str):
 
 def updateWeatherUI():
     def updateWeather(id, city, weather, date):
-        str = id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
+        str = '\n' + id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
         print(str)
         writeFileStr("weather.txt", str)
 
@@ -152,10 +210,16 @@ def updateWeatherUI():
     def viewNotepadCombined():
         viewNotepad("weather.txt")
 
+    def backCombined():
+        ui.destroy()
+        adminUI()
+
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
     viewNotepadButton = tkinter.Button(
         ui, text="View data", bg='light green', command=viewNotepadCombined).grid(row=5, column=2)
+    backButton = tkinter.Button(
+        ui, text="Back", bg='orange', command=backCombined).grid(row=5, column=3)
 
     ui.mainloop()
 
@@ -170,7 +234,7 @@ def updateUserUI():
                 rewriteFile("user.txt", aUsers)
                 return
 
-        str = usr.get()+" "+pwd.get()
+        str = '\n' + usr.get()+" "+pwd.get()
         print(str)
         writeFileStr("user.txt", str)
 
@@ -197,10 +261,16 @@ def updateUserUI():
     def viewNotepadCombined():
         viewNotepad("user.txt")
 
+    def backCombined():
+        ui.destroy()
+        adminUI()
+
     updateDataButton = tkinter.Button(
         ui, text="Update user data", bg='yellow', command=updateCombined).grid(row=5, column=1)
     viewNotepadButton = tkinter.Button(
         ui, text="View user data", bg='light green', command=viewNotepadCombined).grid(row=5, column=2)
+    backButton = tkinter.Button(
+        ui, text="Back", bg='orange', command=backCombined).grid(row=5, column=3)
 
     ui.mainloop()
 
@@ -211,7 +281,7 @@ def adminUI():
     ui.title("ADMINISTRATOR")
     ui.configure(bg='light blue')
 
-    def combinedLog():
+    def combinedLogout():
         ui.destroy()
         mainUI()
 
@@ -230,9 +300,9 @@ def adminUI():
         ui, text="Update user's info", bg='light green', command=combinedUpdateUser).grid(row=0, column=1)
 
     logoutButton = tkinter.Button(
-        ui, text="Logout", bg='orange', command=combinedLog).grid(row=0, column=10)
-    ui.mainloop()
+        ui, text="Logout", bg='orange', command=combinedLogout).grid(row=0, column=10)
 
+    ui.mainloop()
 
 # USER UI
 
@@ -281,7 +351,7 @@ def userUI():
     ui.configure(bg='light blue')
 
     listAllButton = tkinter.Button(
-        ui, text="All weather data", bg="light green", command=printAll).grid(row=0, column=0)
+        ui, text="All weather data", bg="light green", command=printAllSQL).grid(row=0, column=0)
     # findDataButton = tkinter.Button(
     #    ui, text="Find", command=findUI).grid(row=0, column=1)
     findLabel = tkinter.Label(
@@ -291,10 +361,11 @@ def userUI():
     findEntry = tkinter.Entry(
         ui, textvariable=find).grid(row=1, column=3)
 
-    validateFind = partial(printFind, find)
+    def combinedPrintFind():
+        printFindSQL(find)
 
     findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=validateFind).grid(row=1, column=7)
+        ui, text="Find", bg="yellow", command=combinedPrintFind).grid(row=1, column=7)
 
     def combinedLog():
         tkinter.messagebox.showinfo(
@@ -452,3 +523,6 @@ def mainUI():
 # main()
 
 mainUI()
+
+# printAllSQL()
+# printFindSQL('HCM')

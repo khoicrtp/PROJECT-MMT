@@ -50,21 +50,23 @@ def registerUI():
     # reg button
     regButton = tkinter.Button(
         reg, text="Register", command=combinedFunc).grid(row=4, column=0)
+
     def combinedLog():
         global flag
-        flag=0
+        flag = 0
         reg.destroy()
-    
+
     logoutButton = tkinter.Button(
         reg, text="Login", bg='orange', command=combinedLog).grid(row=4, column=7)
+
     def on_closing():
         """This function is to be called when the window is closed."""
         send_server("{quit}")
         client_socket.close()
         global flag
-        flag=-1
+        flag = -1
         reg.destroy()
-    reg.protocol("WM_DELETE_WINDOW", on_closing) 
+    reg.protocol("WM_DELETE_WINDOW", on_closing)
     reg.mainloop()
 
 
@@ -104,20 +106,20 @@ def userUI():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
         global flag
-        flag=0
+        flag = 0
         ui.destroy()
-    
 
     logoutButton = tkinter.Button(
         ui, text="Logout", bg='orange', command=combinedLog).grid(row=2, column=7)
+
     def on_closing():
         """This function is to be called when the window is closed."""
-        send_server("{quit}")   
+        send_server("{quit}")
         client_socket.close()
         global flag
-        flag=-1
+        flag = -1
         ui.destroy()
-    ui.protocol("WM_DELETE_WINDOW", on_closing) 
+    ui.protocol("WM_DELETE_WINDOW", on_closing)
     ui.mainloop()
 
 
@@ -128,21 +130,26 @@ def modeFilter(str):
     master1.withdraw()
     global flag
     if code == "LS":
-        tkinter.messagebox.showinfo("STATUS", "LOGIN SUCCESSFULLY",master=master1)
+        tkinter.messagebox.showinfo(
+            "STATUS", "LOGIN SUCCESSFULLY", master=master1)
         flag = 1
         return 1
     elif code == "LUS":
-        tkinter.messagebox.showinfo("STATUS", "LOGIN UNSUCCESSFULLY",master=master1)
+        tkinter.messagebox.showinfo(
+            "STATUS", "LOGIN UNSUCCESSFULLY", master=master1)
         return 1
     elif code == "RS":
-        tkinter.messagebox.showinfo("STATUS", "REGISTER SUCCESSFULLY",master=master1)
+        tkinter.messagebox.showinfo(
+            "STATUS", "REGISTER SUCCESSFULLY", master=master1)
         flag = 0
         return 1
     elif code == "RUS":
-        tkinter.messagebox.showinfo("STATUS", "REGISTER UNSUCCESSFULLY",master=master1)
+        tkinter.messagebox.showinfo(
+            "STATUS", "REGISTER UNSUCCESSFULLY", master=master1)
         return 1
     elif code == "F":
-        tkinter.messagebox.showinfo("INFOMATION", str[2:len(str)],master=master1)
+        tkinter.messagebox.showinfo(
+            "INFOMATION", str[2:len(str)], master=master1)
         return 1
 
 
@@ -194,7 +201,7 @@ def mainUI():
         usr = username
         pwd = password
         sendLogin(usr, pwd)
-        time.sleep(2)
+        time.sleep(3)
         mainUI.destroy()
 
 # login button
@@ -203,24 +210,24 @@ def mainUI():
 
     def combinedReg():
         global flag
-        flag=2
+        flag = 2
         mainUI.destroy()
-        
 
     regButton = tkinter.Button(
         mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
-    
+
     def on_closing():
         """This function is to be called when the window is closed."""
         send_server("{quit}")
         client_socket.close()
         global flag
-        flag=-1
+        flag = -1
         mainUI.destroy()
-    mainUI.protocol("WM_DELETE_WINDOW", on_closing)   
+    mainUI.protocol("WM_DELETE_WINDOW", on_closing)
     mainUI.mainloop()
- 
+
 # ----Now comes the sockets part----
+
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65431        # The port used by the server
@@ -234,9 +241,9 @@ else:
 
 def handle_UI():
     global flag
-    while flag!=-1:
+    while flag != -1:
         print(flag)
-        if(flag==0):   
+        if(flag == 0):
             mainUI()
         print(flag)
         if(flag == 1):
@@ -244,6 +251,7 @@ def handle_UI():
         print(flag)
         if(flag == 2):
             registerUI()
+
 
 # Create a TCP/IP socket
 ADDR = (HOST, PORT)

@@ -36,3 +36,13 @@ def serverUI():
 
 def printServer(root, msg):
     msg_list.insert(tkinter.END, msg)
+
+
+def insertWeather(id, city, stat, temperature, dateW):
+    query = "INSERT INTO weather(id, city, stat, temperature, dateW) VALUES(" + \
+        id + ", " + city + ", " + stat + ", " + temperature + ", " + dateW+")"
+
+    print(query)
+
+
+insertWeather('2', 'Hanoi', 'Cold', '27.3', '2021-04-16')
