@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Server for multithreaded (asynchronous) chat application.c"""
+import tkinter
 from socket import*
 from threading import Thread
 
@@ -39,11 +40,14 @@ def login(usr, pwd):
             return 1
     return 0
 # Register
+
+
 def checkValid(a, username):
     for i in range(len(a)):
         if (a[i][0] == username):
             return 0
     return 1
+
 
 def register(Rusername, Rpassword):
     info = open("user.txt", "r")
@@ -59,12 +63,11 @@ def register(Rusername, Rpassword):
     if checkValid(a, Rusername) == 0:
         return 0
 
-    Lines.append("\n" + Rusername+ " " + Rpassword)
+    Lines.append("\n" + Rusername + " " + Rpassword)
     fout = open("user.txt", "w")
     for i in range(len(Lines)):
         fout.write(Lines[i])
     return 1
-
 
 
 # Function
@@ -142,14 +145,14 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
             pas = split[2]
             if code == "L":
                 print("%s:%s : " % addresses[client]+"Receive username and password are "+user + " " + pas
-                    + " to login")
+                      + " to login")
                 if login(user, pas) == 1:
                     client.send(bytes("LS", "utf8"))
                 elif login(user, pas) == 0:
                     client.send(bytes("LUS", "utf8"))
             if code == "R":
                 print("%s:%s : " % addresses[client]+"Receive username and password are " + user + " " + pas
-                    + " to register")
+                      + " to register")
                 if register(user, pas) == 1:
                     client.send(bytes("RS", "utf8"))
                 elif register(user, pas) == 0:
@@ -159,10 +162,49 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 client.send(bytes("LUS", "utf8"))
             if code == "R":
                 client.send(bytes("RUS", "utf8"))
+
+
+def serverUI():
+    global top
+
+
+# def printServer(msg):
+#    msg_list.insert(tkinter.END, msg)
+
 if __name__ == "__main__":
+    #UI_THREAD = Thread(target=serverUI)
+    # UI_THREAD.start()
+    top = tkinter.Tk()
+    top.title("Chatter")
+    messages_frame = tkinter.Frame(top)
+    my_msg = tkinter.StringVar()  # For the messages to be sent.
+
+# To navigate through past messages.
+    scrollbar = tkinter.Scrollbar(messages_frame)
+# Following will contain the messages.
+    msg_list = tkinter.Listbox(messages_frame, height=15,
+                               width=50)
+    scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+    msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
+    msg_list.pack()
+    messages_frame.pack()
+
+    def printServer(msg):
+        msg_list.insert(tkinter.END, msg)
+
+    def test():
+        for i in range(1000):
+            #msg_list.insert(tkinter.END, i)
+            printServer(i)
+
+    send_button = tkinter.Button(top, text="Test", command=test)
+    send_button.pack()
+
     SERVER.listen(5)
-    print("Waiting for connection...")
+    msg_list.insert(tkinter.END, "Waiting for connection...")
+
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
+    top.mainloop()
     SERVER.close()

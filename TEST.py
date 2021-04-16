@@ -1,66 +1,38 @@
-from tkinter import *
 import tkinter
 
 
-class mainMaster:
-    def __init__(self, master):
-        self.master = master
-
-        master.geometry("600x300")
-        master.close_button = Button(
-            master, text="Close", command=master.quit)
-        master.close_button.pack()
-
-        def combinedPrintAll():
-            print("F ALL")
-        #send_server("F ALL")
-
-        master.listAllButton = Button(
-            master, text="All weather data", bg="light green", command=combinedPrintAll)
-        master.listAllButton.pack()
-
-        master.findLabel = Label(
-            master, text="City, date, weather,...")
-        master.findLabel.pack()
-
-        master.findVar = tkinter.StringVar()
-
-        master.findEntry = Entry(
-            master, textvariable=master.findVar)
-        master.findEntry.pack()
-
-        def sendFind(var):
-            print(var)
-            str = "F "+var.get()
-            print(str)
-            send_server(str)
-
-        def combinedFind():
-            # master.destroy()
-            sendFind(findVar)
-
-        master.findButton = Button(
-            master, text="Find", bg="yellow", command=combinedFind)
-        master.findButton.pack()
-
-        def combinedLog():
-            messagebox.showinfo(
-                "Goodbye", "Thank you for using my team's app!")
-            master.qmastert()
-
-        master.logoutButton = Button(
-            master, text="Logout", bg='orange', command=combinedLog)
-        master.logoutButton.pack()
-
-    def greet(self):
-        print("Greetings!")
-
-    def selfDes():
-        master.quit()
+def printServer(root, msg):
+    msg_list.insert(tkinter.END, msg)
 
 
-root = Tk()
-my_gmaster = mainMaster(root)
-root.mainloop()
+def serverUI():
+    top = tkinter.Tk()
+    top.title("Chatter")
 
-my_gmaster.selfDes()
+    messages_frame = tkinter.Frame(top)
+    my_msg = tkinter.StringVar()  # For the messages to be sent.
+
+# To navigate through past messages.
+    scrollbar = tkinter.Scrollbar(messages_frame)
+# Following will contain the messages.
+    msg_list = tkinter.Listbox(messages_frame, height=15,
+                               width=50)
+    scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+    msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
+    msg_list.pack()
+    messages_frame.pack()
+
+    def test():
+        for i in range(1000):
+            #msg_list.insert(tkinter.END, i)
+            printServer(top, i)
+
+    send_button = tkinter.Button(top, text="Test", command=test)
+    send_button.pack()
+
+    #msg_list.insert(tkinter.END, msg)
+    top.mainloop()
+
+
+def printServer(root, msg):
+    msg_list.insert(tkinter.END, msg)
