@@ -163,7 +163,7 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
             user = split[1]
             pas = split[2]
             if code == "L":
-                append("%s:%s : " % addresses[client]+"login username and password are "+user + " " + pas)
+                append("%s:%s " % addresses[client]+"login username and password are "+user + " " + pas)
                 if login(user, pas) == 1:
                     client.send(bytes("LS client", "utf8"))
                 elif login(user, pas) == 2:
@@ -171,7 +171,7 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 elif login(user, pas) == 0:
                     client.send(bytes("LUS", "utf8"))
             if code == "R":
-                append("%s:%s : " % addresses[client]+"register username and password are "+user + " " + pas)
+                append("%s:%s " % addresses[client]+"register username and password are "+user + " " + pas)
                 if register(user, pas) == 1:
                     client.send(bytes("RS", "utf8"))
                 elif register(user, pas) == 0:
@@ -202,11 +202,6 @@ def serverUI():
 
     def printServer(msg):
         msg_list.insert(tkinter.END, msg)
-
-    def test():
-        for i in range(1000):
-            #msg_list.insert(tkinter.END, i)
-            printServer(i)
 
     send_button = tkinter.Button(top, text="Test", command=test)
     send_button.pack()
