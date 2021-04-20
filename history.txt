@@ -1,22 +1,18 @@
 Waiting for connection...
-127.0.0.1:51317 has connected.
-127.0.0.1:51317 login username and password are c c
-127.0.0.1:51317 request to find HCM weather
-127.0.0.1:51317 login username and password are ad ad
-127.0.0.1:51317 left.
+127.0.0.1:59541 has connected.
+127.0.0.1:59541 login username and password are ad ad
+127.0.0.1:59541 (ADMIN) request to add  city
+127.0.0.1:59541  008 HCM VIETNAM
+127.0.0.1:59541  008 HCM VIETNAM
 Waiting for connection...
-127.0.0.1:50470 has connected.
-127.0.0.1:50470 login username and password are ad ad
-127.0.0.1:50470 login username and password are c c
-127.0.0.1:50470 request to find HCM weather
-127.0.0.1:50470 request to find Hanoi weather
-127.0.0.1:50470 left.
+127.0.0.1:59613 has connected.
+127.0.0.1:59613 login username and password are ad ad
+127.0.0.1:59613 (ADMIN) request to add  city
+127.0.0.1:59613  008 HCM VIETNAM
+127.0.0.1:59613  008 HCM VIETNAM
 Waiting for connection...
-127.0.0.1:54638 has connected.
-127.0.0.1:54638 login username and password are c c
-127.0.0.1:54638 request to find HCM weather
-127.0.0.1:54638 request to find HCM weather
-127.0.0.1:54638 request to find ALL weather
-127.0.0.1:54638 login username and password are ad ad
-127.0.0.1:54638 login username and password are ad ad
-127.0.0.1:54638 left.
+127.0.0.1:59653 has connected.
+127.0.0.1:59653 login username and password are ad ad
+127.0.0.1:59653 (ADMIN) request to add  city
+127.0.0.1:59653  009 HCM VIETNAM
+127.0.0.1:59653  009 HCM VIETNAM

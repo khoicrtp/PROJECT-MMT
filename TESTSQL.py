@@ -72,7 +72,7 @@ try:
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    #printAll(sqliteConnection, cursor)
+    printAllSQL(sqliteConnection, cursor)
 
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
 

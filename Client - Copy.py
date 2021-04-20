@@ -78,8 +78,8 @@ def registerUI():
 
 
 def updateWeatherUI():
-    def updateWeather(id, city, weather, date):
-        str = 'UPDATE ' + id.get()+" "+city.get()+" "+weather.get()+" "+date.get()
+    def updateWeather(ID, date, min_temp, max_temp, S_ID):
+        str = 'UPDATE ' + ID.get()+" "+date.get()+" "+min_temp.get()+" "+max_temp.get()+" "+S_ID.get()
         print(str)
         send_server( str)
            
@@ -89,31 +89,36 @@ def updateWeatherUI():
     ui.configure(bg='light blue')
 
     IDLabel = tkinter.Label(
-        ui, text="ID", bg='pink').grid(row=0, column=0)
+        ui, text="City_ID", bg='pink').grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
         ui, textvariable=ID).grid(row=0, column=1)
 
-    cityLabel = tkinter.Label(
-        ui, text="City", bg='pink').grid(row=1, column=0)
-    city = tkinter.StringVar()
-    cityEntry = tkinter.Entry(
-        ui, textvariable=city).grid(row=1, column=1)
-
-    weatherLabel = tkinter.Label(
-        ui, text="Weather", bg='pink').grid(row=2, column=0)
-    weather = tkinter.StringVar()
-    weatherEntry = tkinter.Entry(
-        ui, textvariable=weather).grid(row=2, column=1)
-
     dateLabel = tkinter.Label(
-        ui, text="Date", bg='pink').grid(row=3, column=0)
+        ui, text="Date", bg='pink').grid(row=1, column=0)
     date = tkinter.StringVar()
     dateEntry = tkinter.Entry(
-        ui, textvariable=date).grid(row=3, column=1)
+        ui, textvariable=date).grid(row=1, column=1)
+    
+    min_tempLabel = tkinter.Label(
+        ui, text="Min_temp", bg='pink').grid(row=2, column=0)
+    min_temp = tkinter.StringVar()
+    min_tempEntry = tkinter.Entry(
+        ui, textvariable=min_temp).grid(row=2, column=1)
 
+    max_tempLabel = tkinter.Label(
+        ui, text="Max_temp", bg='pink').grid(row=3, column=0)
+    max_temp = tkinter.StringVar()
+    max_tempEntry = tkinter.Entry(
+        ui, textvariable=max_temp).grid(row=3, column=1)
+    
+    S_IDLabel = tkinter.Label(
+        ui, text="S_ID", bg='pink').grid(row=4, column=0)
+    S_ID = tkinter.StringVar()
+    S_IDEntry = tkinter.Entry(
+        ui, textvariable=S_ID).grid(row=4, column=1)
     def updateCombined():
-        updateWeather(ID, city, weather, date)
+        updateWeather(ID, date, min_temp, max_temp, S_ID)
 
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
@@ -155,13 +160,13 @@ def adminUI():
     admin.title("ADMINISTRATOR")
     admin.configure(bg='light blue')
     IDLabel = tkinter.Label(
-        admin, text="ID", bg='pink').grid(row=0, column=0)
+        admin, text="City_ID", bg='pink').grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
         admin, textvariable=ID).grid(row=0, column=1)
 
     cityLabel = tkinter.Label(
-        admin, text="City", bg='pink').grid(row=1, column=0)
+        admin, text="City_Name", bg='pink').grid(row=1, column=0)
     city = tkinter.StringVar()
     cityEntry = tkinter.Entry(
         admin, textvariable=city).grid(row=1, column=1)
@@ -374,7 +379,7 @@ def mainUI():
         usr = username
         pwd = password
         sendLogin(usr, pwd)
-        time.sleep(3)
+        time.sleep(2)
         mainUI.destroy()
 
 # login button
