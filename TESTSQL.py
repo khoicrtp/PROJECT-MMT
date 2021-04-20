@@ -58,6 +58,7 @@ def printFindSQL(con, cur, data):
         for j in range(len(table[i])):
             if table[i][j] == data:
                 result += str(table[i]) + '\n'
+                break
     return result
 
 
@@ -72,7 +73,7 @@ try:
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    printAllSQL(sqliteConnection, cursor)
+    print(printAllSQL(sqliteConnection, cursor))
 
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
 
