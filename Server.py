@@ -4,10 +4,6 @@ from socket import*
 from threading import Thread
 import sqlite3
 
-
-sqliteConnection = sqlite3.connect('weather.db')
-cursor = sqliteConnection.cursor()
-
 clients = {}    # list of names
 addresses = {}
 
@@ -21,25 +17,24 @@ BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
 #SQL
-sqliteConnection = sqlite3.connect('weather.db')
-cursor = sqliteConnection.cursor()
 def insertCity(con, cur, id, name, country):
-    print(country)
+    #append("%s:%s " % addresses[client]+" "+id + " " + name + " " + country)
     query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
         "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
 
     cur.execute(query)
     con.commit()
 def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    
     query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
-            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
-    print(query)
+        dateW + "'" + ", " + "'" + minT + "'" + ", " + "'" + \
+            maxT + "'" + ", " + "'" + s_id + "'"+")"
 
     cur.execute(query)
     con.commit()
-def updateWeather(st,client):
-    split = globalMsg.split()
+
+def updateWeather(str, sqliteConnection, cursor):
+    split = str.split()
     ID = split[0]
     date = split[1]
     min_temp = split[2]
@@ -48,15 +43,17 @@ def updateWeather(st,client):
     try:
         insertWeather(sqliteConnection, cursor, ID, date, min_temp, max_temp, S_ID)
         sqliteConnection.commit()
+        return 1
     except sqlite3.Error as error:
         print("Error while executing sqlite script", error)
+        return 0
+    return 0
 
-def addCity(str,client):
+def addCity(str, sqliteConnection, cursor):
     split = str.split()
     ID = split[0]
     name = split[1]
     country = split[2]
-    append("%s:%s " % addresses[client]+" "+ID + " " + name + " " + country)
     try:
         insertCity(sqliteConnection, cursor, ID, name, country)
         sqliteConnection.commit()
@@ -190,7 +187,7 @@ def printFind(find):
 def function(client, info):
     msg = printFind(info)
     client.send(
-        bytes("F "+msg, "utf8"))
+        bytes("FS "+msg, "utf8"))
 
 
 def accept_incoming_connections():
@@ -223,7 +220,9 @@ def receive(client):
 
 def handle_client(client, globalMsg):  # Takes client socket as argument.
     """Handles a single client connection."""
-    print(globalMsg)
+    sqliteConnection = sqlite3.connect('weather.db')
+    cursor = sqliteConnection.cursor()
+    
     split = globalMsg.split()
     code = split[0]
     if code == "FIND":
@@ -233,17 +232,18 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
             function(client, info)
     elif code=="UPDATE":
         append("%s:%s (ADMIN) request to update " % addresses[client] + " weather")
+        append(globalMsg)
         msg=globalMsg[7:len(globalMsg)]
-        if updateWeather(msg,client)==1:
+        if updateWeather(msg, sqliteConnection, cursor)==1:
             client.send(bytes("US", "utf8"))
-        elif updateWeather(msg,client)==1:
+        elif updateWeather(msg, sqliteConnection, cursor)==0:
             client.send(bytes("UUS", "utf8"))
     elif code=="ADD":
         append("%s:%s (ADMIN) request to add " % addresses[client] + " city")
         msg=globalMsg[4:len(globalMsg)]
-        if addCity(msg,client)==1:
+        if addCity(msg, sqliteConnection, cursor)==1:
             client.send(bytes("AS", "utf8"))
-        elif addCity(msg,client)==0:
+        elif addCity(msg, sqliteConnection, cursor)==0:
             client.send(bytes("AUS", "utf8"))
     else:
         # Login or Register
@@ -269,6 +269,9 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 client.send(bytes("LUS", "utf8"))
             if code == "R":
                 client.send(bytes("RUS", "utf8"))
+                
+    cursor.close()
+    sqliteConnection.close()
 
 
 def serverUI():

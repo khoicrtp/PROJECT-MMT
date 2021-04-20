@@ -1,18 +1,59 @@
 Waiting for connection...
-127.0.0.1:59541 has connected.
-127.0.0.1:59541 login username and password are ad ad
-127.0.0.1:59541 (ADMIN) request to add  city
-127.0.0.1:59541  008 HCM VIETNAM
-127.0.0.1:59541  008 HCM VIETNAM
+127.0.0.1:60181 has connected.
+127.0.0.1:60181 login username and password are ad ad
+127.0.0.1:60181 (ADMIN) request to add  city
+127.0.0.1:60181  008 HCM VietNam
+127.0.0.1:60181  008 HCM VietNam
 Waiting for connection...
-127.0.0.1:59613 has connected.
-127.0.0.1:59613 login username and password are ad ad
-127.0.0.1:59613 (ADMIN) request to add  city
-127.0.0.1:59613  008 HCM VIETNAM
-127.0.0.1:59613  008 HCM VIETNAM
+127.0.0.1:60200 has connected.
+127.0.0.1:60200 login username and password are ad ad
+127.0.0.1:60200 (ADMIN) request to add  city
+127.0.0.1:60200  008 HCM VIETNAM
 Waiting for connection...
-127.0.0.1:59653 has connected.
-127.0.0.1:59653 login username and password are ad ad
-127.0.0.1:59653 (ADMIN) request to add  city
-127.0.0.1:59653  009 HCM VIETNAM
-127.0.0.1:59653  009 HCM VIETNAM
+127.0.0.1:60247 has connected.
+127.0.0.1:60247 login username and password are ad ad
+127.0.0.1:60247 (ADMIN) request to add  city
+127.0.0.1:60247  006 HCM VietNam
+127.0.0.1:60247  006 HCM VietNam
+Waiting for connection...
+127.0.0.1:60312 has connected.
+127.0.0.1:60312 login username and password are ad ad
+127.0.0.1:60312 (ADMIN) request to add  city
+Waiting for connection...
+127.0.0.1:60329 has connected.
+127.0.0.1:60329 login username and password are ad ad
+127.0.0.1:60329 (ADMIN) request to add  city
+Waiting for connection...
+127.0.0.1:60380 has connected.
+127.0.0.1:60380 login username and password are ad ad
+127.0.0.1:60380 (ADMIN) request to update  weather
+Waiting for connection...
+127.0.0.1:60398 has connected.
+127.0.0.1:60398 login username and password are ad ad
+127.0.0.1:60398 (ADMIN) request to update  weather
+127.0.0.1:60398 (ADMIN) request to update  weather
+Waiting for connection...
+127.0.0.1:60449 has connected.
+127.0.0.1:60449 login username and password are ad ad
+127.0.0.1:60449 (ADMIN) request to update  weather
+127.0.0.1:60449 (ADMIN) request to update  weather
+Waiting for connection...
+127.0.0.1:60593 has connected.
+127.0.0.1:60593 login username and password are ad ad
+127.0.0.1:60593 (ADMIN) request to update  weather
+UPDATE 004 2021-5-31 32 38 2
+Waiting for connection...
+127.0.0.1:60669 has connected.
+127.0.0.1:60669 login username and password are ad ad
+127.0.0.1:60669 (ADMIN) request to update  weather
+UPDATE 006 2021-5-31 35 40 2
+Waiting for connection...
+127.0.0.1:60700 has connected.
+127.0.0.1:60700 login username and password are ad ad
+127.0.0.1:60700 (ADMIN) request to update  weather
+UPDATE 006 2021-5-31 34 40 2
+Waiting for connection...
+127.0.0.1:60770 has connected.
+127.0.0.1:60770 login username and password are ad ad
+127.0.0.1:60770 (ADMIN) request to update  weather
+UPDATE 006 2021-6-23 32 35 5
