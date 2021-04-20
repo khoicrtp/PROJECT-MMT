@@ -20,11 +20,12 @@ def insertCity(con, cur, id, name, country):
     con.commit()
 
 
+
 def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    
     query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
-            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
-    print(query)
+        dateW + "'" + ", " + "'" + minT + "'" + ", " + "'" + \
+            maxT + "'" + ", " + "'" + s_id + "'"+")"
 
     cur.execute(query)
     con.commit()
@@ -69,19 +70,18 @@ try:
     # TEST CASE:
     #executeSQL(sqliteConnection, cursor, 'data.sql')
     #insertCity(sqliteConnection, cursor, "006", "Cam Ranh", "VietNam")
-    #insertWeather(sqliteConnection, cursor, "003", '2021-4-24', 30, 35, '2')
+    insertWeather(sqliteConnection, cursor, "005", '2021-4-24', '30', '35', '2')
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    print(printAllSQL(sqliteConnection, cursor))
+    #print(printAllSQL(sqliteConnection, cursor))
 
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
 
     # for i in range(7):
-    #    insertWeather(sqliteConnection, cursor, '5', 'Washington', 'Cold',
-    #                  '28.5', str('2021-04-'+str(17+i)))
+    
 
-    print(printFindSQL(sqliteConnection, cursor, '004'))
+    #print(printFindSQL(sqliteConnection, cursor, '004'))
 
     cursor.close()
 
