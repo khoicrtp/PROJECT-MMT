@@ -77,8 +77,7 @@ def printWeatherArray(a):
             str(weather[2]) + " " + str(weather[3]) + " " + weather[6] + '\n'
     return temp
 
-
-def printCity7Day(con, cur, city):
+def printCity7Day(con, cur, data):
     table = getWeather(con, cur)
 
     today = now()
@@ -99,18 +98,17 @@ def printCity7Day(con, cur, city):
         listCityID.append(aCity[i][0])
 
     # print(listCityID)
-
-    for cid in listCityID:
+    cityData=getCity(con,cur)
+    for i in range (len(cityData)):
         temp = ""
-        if(cid == city):
-            aWeather = findToArray(con, cur, cid)
+        if(data in cityData[i]):
+            aWeather = findToArray(con, cur, cityData[i][0])
             for weather in aWeather:
                 cWeather = []
-                if (weather[1] in validDay) and cid == weather[0]:
+                if (weather[1] in validDay) and cityData[i][0] == weather[0]:
                     cWeather.append(weather)
                 result += printWeatherArray(cWeather)
     return result
-
 
 def printAllCityInDay(con, cur):
     table = getWeather(con, cur)
@@ -197,15 +195,15 @@ try:
     print("Successfully Connected to SQLite")
 
     # TEST CASE:
-    executeSQL(sqliteConnection, cursor, 'data.sql')
+    #executeSQL(sqliteConnection, cursor, 'data.sql')
     #insertCity(sqliteConnection, cursor, "006", "Cam Ranh", "VietNam")
     #insertWeather(sqliteConnection, cursor, "003", stri, 30, 35, '2')
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    #print(printCity7Day(sqliteConnection, cursor, '001'))
-    print(printAllCityInDay(sqliteConnection, cursor))
-    print(printAllCityInSpecifiedDay(sqliteConnection, cursor, '2021-4-24'))
+    print(printCity7Day(sqliteConnection, cursor, 'HaNoi'))
+    #print(printAllCityInDay(sqliteConnection, cursor))
+    #print(printAllCityInSpecifiedDay(sqliteConnection, cursor, '2021-4-24'))
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
 
     #print(printAllCity(sqliteConnection, cursor))

@@ -127,7 +127,11 @@ def updateWeatherUI():
 
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
+    def showWeatherCombined():
+        send_server("SHOW WEATHER")
 
+    showWeatherButton = tkinter.Button(
+        ui, text="SHOW WEATHER", bg='yellow', command=showWeatherCombined).grid(row=6, column=1)
     def backCombined():
         global flag
         flag = 3
@@ -290,32 +294,47 @@ def userUI():
     ui.title("USER")
 
     def combinedPrintAll():
-        print("FIND ALL")
-        send_server("FIND ALL")
+        send_server("FIND ALLCITYTODAY")
 
     listAllButton = tkinter.Button(
-        ui, text="All weather data", bg="light green", command=combinedPrintAll).grid(row=0, column=0)
+        ui, text="Weather Today Of All City" , bg="light green", command=combinedPrintAll).grid(row=0, column=0)
 
-    findLabel = tkinter.Label(
-        ui, text="City, date, weather,...").grid(row=1, column=0)
-    findVar = tkinter.StringVar()
+    DayLabel = tkinter.Label(
+        ui, text="DAY: ").grid(row=1, column=0)
+    Day = tkinter.StringVar()
 
-    findEntry = tkinter.Entry(
-        ui, textvariable=findVar).grid(row=1, column=3)
+    DayEntry = tkinter.Entry(
+        ui, textvariable=Day).grid(row=1, column=3)
+    
+    CityLabel = tkinter.Label(
+        ui, text="CITY: ").grid(row=2, column=0)
+    City = tkinter.StringVar()
 
-    def sendFind(var):
-        print(var)
-        str = "FIND "+var.get()
+    CityEntry = tkinter.Entry(
+        ui, textvariable=City).grid(row=2, column=3)
+    def sendDay(var):
+        str = "FIND DAY "+var.get()
         print(str)
         send_server(str)
 
-    def combinedFind():
+    def combinedDay():
         # ui.destroy()
-        sendFind(findVar)
+        sendDay(Day)
 
-    findButton = tkinter.Button(
-        ui, text="Find", bg="yellow", command=combinedFind).grid(row=1, column=7)
+    findDayButton = tkinter.Button(
+        ui, text="Find Day", bg="yellow", command=combinedDay).grid(row=1, column=7)
 
+    def sendCity(var):
+        print(var)
+        str = "FIND CITY "+var.get()
+        send_server(str)
+    
+    def combinedCity():
+        # ui.destroy()
+        sendCity(City)
+
+    findCityButton = tkinter.Button(
+        ui, text="Find City", bg="yellow", command=combinedCity).grid(row=2, column=7)
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
@@ -324,7 +343,7 @@ def userUI():
         ui.destroy()
 
     logoutButton = tkinter.Button(
-        ui, text="Logout", bg='orange', command=combinedLog).grid(row=2, column=7)
+        ui, text="Logout", bg='orange', command=combinedLog).grid(row=3, column=7)
 
     def combinedClose():
         send_server("{quit}")
@@ -334,7 +353,7 @@ def userUI():
         ui.destroy()
 
     closeButton = tkinter.Button(
-        ui, text="Close connection", bg="red", command=combinedClose).grid(row=3, column=7)
+        ui, text="Close connection", bg="red", command=combinedClose).grid(row=4, column=7)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -376,9 +395,13 @@ def modeFilter(str):
         tkinter.messagebox.showinfo(
             "STATUS", "REGISTER UNSUCCESSFULLY", master=master1)
         return 1
-    elif code == "F":
+    elif code == "FS":
         tkinter.messagebox.showinfo(
-            "INFOMATION", str[2:len(str)], master=master1)
+            "INFOMATION", str[3:len(str)], master=master1)
+        return 1
+    elif code == "FUS":
+        tkinter.messagebox.showinfo(
+            "STATUS", "FIND UNSUCCESSFULLY", master=master1)
         return 1
     elif code == "US":
         tkinter.messagebox.showinfo(
@@ -399,6 +422,9 @@ def modeFilter(str):
     elif code == "CITY":
         tkinter.messagebox.showinfo(
             "SHOW CITY", str[5:len(str)], master=master1)
+    elif code == "WEATHER":
+        tkinter.messagebox.showinfo(
+            "SHOW WEATHER", str[8:len(str)], master=master1)
 
 
 def receive():

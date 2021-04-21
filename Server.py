@@ -3,7 +3,7 @@
 from socket import*
 from threading import Thread
 import sqlite3
-
+import datetime
 clients = {}    # list of names
 addresses = {}
 
@@ -77,14 +77,6 @@ def getWeather(con, cur):
     table = cur.fetchall()
     return table
 
-
-def getCity(con, cur):
-    query = "SELECT* FROM CITY"
-    cur.execute(query)
-    table = cur.fetchall()
-    return table
-
-
 def printAllSQL(con, cur):
     table = getWeather(con, cur)
 
@@ -96,17 +88,132 @@ def printAllSQL(con, cur):
         result += temp + '\n'
     return result
 
+def getCity(con, cur):
+    query = "SELECT* FROM CITY"
+    cur.execute(query)
+    table = cur.fetchall()
+    return table
 
-def printFindSQL(con, cur, data):
+def printAllCity(con, cur):
+    result = ""
+    table = getCity(con, cur)
+    for i in table:
+        result += str(i) + '\n'
+    return result
+
+
+def now():
+    return datetime.datetime.now()
+
+
+def findToArray(con, cur, data):
+    # ('004', '2021-4-26', 22.0, 26.0, '1', '1', 'Rainy', '004', 'Tokyo', 'Japan')
     table = getWeather(con, cur)
 
-    result = ""
+    result = []
 
     for i in range(len(table)):
         for j in range(len(table[i])):
             if table[i][j] == data:
-                result += str(table[i]) + '\n'
+                result.append(table[i])
+                break
     return result
+
+
+def printWeatherArray(a):
+    temp = ""
+    for weather in a:
+        temp += weather[8] + " " + weather[1] + " " + \
+            str(weather[2]) + " " + str(weather[3]) + " " + weather[6] + '\n'
+    return temp
+
+
+def printCity7Day(con, cur, data):
+    table = getWeather(con, cur)
+
+    today = now()
+    # 001, 2021-4-24, 30.0, 35.0, 2, 2, Sunny, 001, HaNoi, VietNam
+
+    validDay = []
+    for i in range(7):
+        # print(str(today.year) + "-" +
+        #      str(today.month) + "-" + str(today.day + i))
+        validDay.append(str(today.year) + "-" +
+                        str(today.month) + "-" + str(today.day + i))
+
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+    cityData=getCity(con,cur)
+    for i in range (len(cityData)):
+        temp = ""
+        if(data in cityData[i]):
+            aWeather = findToArray(con, cur, cityData[i][0])
+            for weather in aWeather:
+                cWeather = []
+                if (weather[1] in validDay) and cityData[i][0] == weather[0]:
+                    cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
+
+
+def printAllCityInDay(con, cur):
+    table = getWeather(con, cur)
+
+    today = now()
+    # 001, 2021-4-24, 30.0, 35.0, 2, 2, Sunny, 001, HaNoi, VietNam
+
+    validDay = (str(today.year) + "-" +
+                str(today.month) + "-" + str(today.day))
+    print(validDay)
+    #validDay = '2021-4-24'
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+
+    for cid in listCityID:
+        temp = ""
+        aWeather = findToArray(con, cur, cid)
+        for weather in aWeather:
+            cWeather = []
+            if (weather[1] == validDay) and cid == weather[0]:
+                cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
+
+
+def printAllCityInSpecifiedDay(con, cur, validDay):
+    table = getWeather(con, cur)
+
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+
+    for cid in listCityID:
+        temp = ""
+        aWeather = findToArray(con, cur, cid)
+        for weather in aWeather:
+            cWeather = []
+            if (weather[1] == validDay) and cid == weather[0]:
+                cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
+
 
 # login
 # FILE
@@ -240,12 +347,6 @@ def receive(client):
             break
 
 
-def printAllCity(con, cur):
-    result = ""
-    table = getCity(con, cur)
-    for i in table:
-        result += str(i) + '\n'
-    return result
 
 
 def handle_client(client, globalMsg):  # Takes client socket as argument.
@@ -256,11 +357,22 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
     split = globalMsg.split()
     code = split[0]
     if code == "FIND":
-        info = split[1]
-        if info != "":
-            append("%s:%s request to find " %
-                   addresses[client] + info + " weather")
-            function(client, info)
+        try:
+            info = split[1]
+            if info == "ALLCITYTODAY":
+                client.send(
+                    bytes("FS " + printAllCityInDay(sqliteConnection, cursor), "utf8"))
+            elif info == "DAY":
+                day=split[2]
+                client.send(
+                    bytes("FS " + printAllCityInSpecifiedDay(sqliteConnection, cursor, day), "utf8"))
+            elif info == "CITY":
+                city=split[2]
+                client.send(
+                    bytes("FS " + printCity7Day(sqliteConnection, cursor, city), "utf8"))
+        except:
+            client.send(
+                    bytes("FUS", "utf8"))
     elif code == "SHOW":
         info = split[1]
         append("%s:%s request to show " %
@@ -268,21 +380,29 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
         if info == "CITY":
             client.send(
                 bytes("CITY " + printAllCity(sqliteConnection, cursor), "utf8"))
+        elif info == "WEATHER":
+            client.send(
+                bytes("WEATHER " + printAllSQL(sqliteConnection, cursor), "utf8"))    
     elif code == "UPDATE":
         append("%s:%s (ADMIN) request to update " %
                addresses[client] + " weather")
-        append(globalMsg)
-        msg = globalMsg[7:len(globalMsg)]
-        if updateWeather(msg, sqliteConnection, cursor) == 1:
-            client.send(bytes("US", "utf8"))
-        elif updateWeather(msg, sqliteConnection, cursor) == 0:
+        try:
+            msg = globalMsg[7:len(globalMsg)]
+            if updateWeather(msg, sqliteConnection, cursor) == 1:
+                client.send(bytes("US", "utf8"))
+            elif updateWeather(msg, sqliteConnection, cursor) == 0:
+                client.send(bytes("UUS", "utf8"))
+        except:
             client.send(bytes("UUS", "utf8"))
     elif code == "ADD":
         append("%s:%s (ADMIN) request to add " % addresses[client] + " city")
-        msg = globalMsg[4:len(globalMsg)]
-        if addCity(msg, sqliteConnection, cursor) == 1:
-            client.send(bytes("AS", "utf8"))
-        elif addCity(msg, sqliteConnection, cursor) == 0:
+        try:
+            msg = globalMsg[4:len(globalMsg)]
+            if addCity(msg, sqliteConnection, cursor) == 1:
+                client.send(bytes("AS", "utf8"))
+            elif addCity(msg, sqliteConnection, cursor) == 0:
+                client.send(bytes("AUS", "utf8"))
+        except:
             client.send(bytes("AUS", "utf8"))
     else:
         # Login or Register
