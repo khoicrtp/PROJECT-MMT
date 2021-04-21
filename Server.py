@@ -8,7 +8,7 @@ clients = {}    # list of names
 addresses = {}
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65431        # Port to listen on (non-privileged ports are > 1023)
+PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind((HOST, PORT))
@@ -77,6 +77,7 @@ def getWeather(con, cur):
     table = cur.fetchall()
     return table
 
+
 def printAllSQL(con, cur):
     table = getWeather(con, cur)
 
@@ -88,11 +89,13 @@ def printAllSQL(con, cur):
         result += temp + '\n'
     return result
 
+
 def getCity(con, cur):
     query = "SELECT* FROM CITY"
     cur.execute(query)
     table = cur.fetchall()
     return table
+
 
 def printAllCity(con, cur):
     result = ""
@@ -149,8 +152,8 @@ def printCity7Day(con, cur, data):
         listCityID.append(aCity[i][0])
 
     # print(listCityID)
-    cityData=getCity(con,cur)
-    for i in range (len(cityData)):
+    cityData = getCity(con, cur)
+    for i in range(len(cityData)):
         temp = ""
         if(data in cityData[i]):
             aWeather = findToArray(con, cur, cityData[i][0])
@@ -347,8 +350,6 @@ def receive(client):
             break
 
 
-
-
 def handle_client(client, globalMsg):  # Takes client socket as argument.
     """Handles a single client connection."""
     sqliteConnection = sqlite3.connect('weather.db')
@@ -363,16 +364,16 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 client.send(
                     bytes("FS " + printAllCityInDay(sqliteConnection, cursor), "utf8"))
             elif info == "DAY":
-                day=split[2]
+                day = split[2]
                 client.send(
                     bytes("FS " + printAllCityInSpecifiedDay(sqliteConnection, cursor, day), "utf8"))
             elif info == "CITY":
-                city=split[2]
+                city = split[2]
                 client.send(
                     bytes("FS " + printCity7Day(sqliteConnection, cursor, city), "utf8"))
         except:
             client.send(
-                    bytes("FUS", "utf8"))
+                bytes("FUS", "utf8"))
     elif code == "SHOW":
         info = split[1]
         append("%s:%s request to show " %
@@ -382,7 +383,7 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 bytes("CITY " + printAllCity(sqliteConnection, cursor), "utf8"))
         elif info == "WEATHER":
             client.send(
-                bytes("WEATHER " + printAllSQL(sqliteConnection, cursor), "utf8"))    
+                bytes("WEATHER " + printAllSQL(sqliteConnection, cursor), "utf8"))
     elif code == "UPDATE":
         append("%s:%s (ADMIN) request to update " %
                addresses[client] + " weather")

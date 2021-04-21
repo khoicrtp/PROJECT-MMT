@@ -127,11 +127,13 @@ def updateWeatherUI():
 
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
+
     def showWeatherCombined():
         send_server("SHOW WEATHER")
 
     showWeatherButton = tkinter.Button(
         ui, text="SHOW WEATHER", bg='yellow', command=showWeatherCombined).grid(row=6, column=1)
+
     def backCombined():
         global flag
         flag = 3
@@ -297,7 +299,7 @@ def userUI():
         send_server("FIND ALLCITYTODAY")
 
     listAllButton = tkinter.Button(
-        ui, text="Weather Today Of All City" , bg="light green", command=combinedPrintAll).grid(row=0, column=0)
+        ui, text="Weather Today Of All City", bg="light green", command=combinedPrintAll).grid(row=0, column=0)
 
     DayLabel = tkinter.Label(
         ui, text="DAY: ").grid(row=1, column=0)
@@ -305,13 +307,14 @@ def userUI():
 
     DayEntry = tkinter.Entry(
         ui, textvariable=Day).grid(row=1, column=3)
-    
+
     CityLabel = tkinter.Label(
         ui, text="CITY: ").grid(row=2, column=0)
     City = tkinter.StringVar()
 
     CityEntry = tkinter.Entry(
         ui, textvariable=City).grid(row=2, column=3)
+
     def sendDay(var):
         str = "FIND DAY "+var.get()
         print(str)
@@ -328,13 +331,14 @@ def userUI():
         print(var)
         str = "FIND CITY "+var.get()
         send_server(str)
-    
+
     def combinedCity():
         # ui.destroy()
         sendCity(City)
 
     findCityButton = tkinter.Button(
         ui, text="Find City", bg="yellow", command=combinedCity).grid(row=2, column=7)
+
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
@@ -513,16 +517,6 @@ def mainUI():
 # ----Now comes the sockets part----
 
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65431        # The port used by the server
-BUFSIZ = 1024
-
-if not PORT:
-    PORT = 33000
-else:
-    PORT = int(PORT)
-
-
 def handle_UI():
     global flag
     while flag != -1:
@@ -543,16 +537,77 @@ def handle_UI():
             addCityUI()
 
 
-# Create a TCP/IP socket
-ADDR = (HOST, PORT)
+HOST = '127.0.0.1'  # The server's hostname or IP address
+PORT = 65431
+BUFSIZ = 1024
 client_socket = socket(AF_INET, SOCK_STREAM)
-client_socket.connect(ADDR)
-server_address = (HOST, PORT)
-receive_thread = Thread(target=receive)
-receive_thread.start()
+# Create a TCP/IP socket
 
-UI_thread = Thread(target=handle_UI)
-UI_thread.start()
+
+def mainFunc(host, port):
+    # HOST = '127.0.0.1'  # The server's hostname or IP address
+    # PORT = 65431        # The port used by the server
+    global HOST
+    global PORT
+    HOST = host
+    PORT = port
+
+    if not PORT:
+        PORT = 65432
+    else:
+        PORT = int(PORT)
+
+    ADDR = (HOST, PORT)
+    client_socket = socket(AF_INET, SOCK_STREAM)
+    client_socket.connect(ADDR)
+    server_address = (HOST, PORT)
+    receive_thread = Thread(target=receive)
+    receive_thread.start()
+
+    UI_thread = Thread(target=handle_UI)
+    UI_thread.start()
+
+
+try:
+    mainFunc('127.0.0.1', 65432)
+
+except:
+    def inputHostUI():
+        reg = tkinter.Tk()
+        reg.geometry('600x300')
+        reg.title('INPUT HOST')
+        reg.configure(bg='light blue')
+
+    # username label and text entry box
+        hostLabel = tkinter.Label(reg, text="HOST").grid(row=0, column=0)
+        host = tkinter.StringVar()
+        hostEntry = tkinter.Entry(
+            reg, textvariable=host).grid(row=0, column=1)
+
+    # password label and password entry box
+        portLabel = tkinter.Label(reg, text="PORT").grid(row=1, column=0)
+        port = tkinter.StringVar()
+        portEntry = tkinter.Entry(
+            reg, textvariable=port, show='*').grid(row=1, column=1)
+
+        def setSocket(hostname, portID):
+            HOST = hostname.get()
+            PORT = int(portID.get())
+
+        def combinedFunc():
+            setSocket(host, port)
+            time.sleep(1)
+            reg.destroy()
+            print(hostname.get(), int(portID.get()))
+            mainFunc(hostname.get(), int(portID.get()))
+    # reg button
+        setButton = tkinter.Button(
+            reg, text="SET HOST", command=combinedFunc).grid(row=0, column=7)
+
+        reg.mainloop()
+
+    inputHostUI()
+
 
 # mainUI()
 # userUI()
