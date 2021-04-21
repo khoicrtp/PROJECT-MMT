@@ -4,6 +4,10 @@ from socket import*
 from threading import Thread
 import sqlite3
 
+
+sqliteConnection = sqlite3.connect('weather.db')
+cursor = sqliteConnection.cursor()
+
 clients = {}    # list of names
 addresses = {}
 
@@ -16,51 +20,43 @@ SERVER.bind((HOST, PORT))
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
-# SQL
-
-
+#SQL
+sqliteConnection = sqlite3.connect('weather.db')
+cursor = sqliteConnection.cursor()
 def insertCity(con, cur, id, name, country):
-    # append("%s:%s " % addresses[client]+" "+id + " " + name + " " + country)
+    print(country)
     query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
         "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
 
     cur.execute(query)
     con.commit()
-
-
 def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
-
     query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + minT + "'" + ", " + "'" + \
-            maxT + "'" + ", " + "'" + s_id + "'"+")"
+        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
+            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
+    print(query)
 
     cur.execute(query)
     con.commit()
-
-
-def updateWeather(str, sqliteConnection, cursor):
-    split = str.split()
+def updateWeather(st,client):
+    split = globalMsg.split()
     ID = split[0]
     date = split[1]
     min_temp = split[2]
     max_temp = split[3]
-    S_ID = split[4]
+    S_ID = split[4]    
     try:
-        insertWeather(sqliteConnection, cursor, ID,
-                      date, min_temp, max_temp, S_ID)
+        insertWeather(sqliteConnection, cursor, ID, date, min_temp, max_temp, S_ID)
         sqliteConnection.commit()
-        return 1
     except sqlite3.Error as error:
         print("Error while executing sqlite script", error)
-        return 0
-    return 0
 
-
-def addCity(str, sqliteConnection, cursor):
+def addCity(str,client):
     split = str.split()
     ID = split[0]
     name = split[1]
     country = split[2]
+    append("%s:%s " % addresses[client]+" "+ID + " " + name + " " + country)
     try:
         insertCity(sqliteConnection, cursor, ID, name, country)
         sqliteConnection.commit()
@@ -70,20 +66,11 @@ def addCity(str, sqliteConnection, cursor):
         return 0
     return 0
 
-
 def getWeather(con, cur):
-    query = "SELECT DISTINCT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
-    cur.execute(query)
-    table = cur.fetchall()
+    query = "SELECT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
+    cursor.execute(query)
+    table = cursor.fetchall()
     return table
-
-
-def getCity(con, cur):
-    query = "SELECT* FROM CITY"
-    cur.execute(query)
-    table = cur.fetchall()
-    return table
-
 
 def printAllSQL(con, cur):
     table = getWeather(con, cur)
@@ -107,11 +94,9 @@ def printFindSQL(con, cur, data):
             if table[i][j] == data:
                 result += str(table[i]) + '\n'
     return result
-
+ 
 # login
 # FILE
-
-
 def writeFile(strFile, str):
     file = open(strFile, "r")
     str += '\n'
@@ -122,12 +107,8 @@ def writeFile(strFile, str):
     file = open(strFile, "w")
     file.writelines(Lines)
     file.close()
-
-
 def append(str):
-    writeFile("history.txt", str)
-
-
+    writeFile("history.txt",str)
 def getFile(filename):
     loginFile = open(filename)
     Lines = loginFile.readlines()
@@ -209,7 +190,7 @@ def printFind(find):
 def function(client, info):
     msg = printFind(info)
     client.send(
-        bytes("FS "+msg, "utf8"))
+        bytes("F "+msg, "utf8"))
 
 
 def accept_incoming_connections():
@@ -240,49 +221,29 @@ def receive(client):
             break
 
 
-def printAllCity(con, cur):
-    result = ""
-    table = getCity(con, cur)
-    for i in table:
-        result += str(i) + '\n'
-    return result
-
-
 def handle_client(client, globalMsg):  # Takes client socket as argument.
     """Handles a single client connection."""
-    sqliteConnection = sqlite3.connect('weather.db')
-    cursor = sqliteConnection.cursor()
-
+    print(globalMsg)
     split = globalMsg.split()
     code = split[0]
     if code == "FIND":
         info = split[1]
         if info != "":
-            append("%s:%s request to find " %
-                   addresses[client] + info + " weather")
+            append("%s:%s request to find " % addresses[client] + info+ " weather")
             function(client, info)
-    elif code == "SHOW":
-        info = split[1]
-        append("%s:%s request to show " %
-               addresses[client] + info)
-        if info == "CITY":
-            client.send(
-                bytes("CITY " + printAllCity(sqliteConnection, cursor), "utf8"))
-    elif code == "UPDATE":
-        append("%s:%s (ADMIN) request to update " %
-               addresses[client] + " weather")
-        append(globalMsg)
-        msg = globalMsg[7:len(globalMsg)]
-        if updateWeather(msg, sqliteConnection, cursor) == 1:
+    elif code=="UPDATE":
+        append("%s:%s (ADMIN) request to update " % addresses[client] + " weather")
+        msg=globalMsg[7:len(globalMsg)]
+        if updateWeather(msg,client)==1:
             client.send(bytes("US", "utf8"))
-        elif updateWeather(msg, sqliteConnection, cursor) == 0:
+        elif updateWeather(msg,client)==1:
             client.send(bytes("UUS", "utf8"))
-    elif code == "ADD":
+    elif code=="ADD":
         append("%s:%s (ADMIN) request to add " % addresses[client] + " city")
-        msg = globalMsg[4:len(globalMsg)]
-        if addCity(msg, sqliteConnection, cursor) == 1:
+        msg=globalMsg[4:len(globalMsg)]
+        if addCity(msg,client)==1:
             client.send(bytes("AS", "utf8"))
-        elif addCity(msg, sqliteConnection, cursor) == 0:
+        elif addCity(msg,client)==0:
             client.send(bytes("AUS", "utf8"))
     else:
         # Login or Register
@@ -290,8 +251,7 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
             user = split[1]
             pas = split[2]
             if code == "L":
-                append(
-                    "%s:%s " % addresses[client]+"login username and password are "+user + " " + pas)
+                append("%s:%s " % addresses[client]+"login username and password are "+user + " " + pas)
                 if login(user, pas) == 1:
                     client.send(bytes("LS client", "utf8"))
                 elif login(user, pas) == 2:
@@ -299,8 +259,7 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 elif login(user, pas) == 0:
                     client.send(bytes("LUS", "utf8"))
             if code == "R":
-                append(
-                    "%s:%s " % addresses[client]+"register username and password are "+user + " " + pas)
+                append("%s:%s " % addresses[client]+"register username and password are "+user + " " + pas)
                 if register(user, pas) == 1:
                     client.send(bytes("RS", "utf8"))
                 elif register(user, pas) == 0:
@@ -310,9 +269,6 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
                 client.send(bytes("LUS", "utf8"))
             if code == "R":
                 client.send(bytes("RUS", "utf8"))
-
-    cursor.close()
-    sqliteConnection.close()
 
 
 def serverUI():
@@ -338,9 +294,8 @@ def serverUI():
     send_button = tkinter.Button(top, text="Test", command=test)
     send_button.pack()
 
-    # msg_list.insert(tkinter.END, msg)
+    #msg_list.insert(tkinter.END, msg)
     top.mainloop()
-
 
 if __name__ == "__main__":
     SERVER.listen(5)
@@ -349,6 +304,7 @@ if __name__ == "__main__":
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
     SERVER.close()
-    # file=open("history.txt","r+")
-    # file.truncate(0)
-    # file.close()
+    #file=open("history.txt","r+")
+    #file.truncate(0)
+    #file.close()
+    

@@ -163,67 +163,29 @@ def addCityUI():
         print(str)
         send_server(str)
 
-    ui = tkinter.Tk()
-    ui.geometry("600x300")
-    ui.title("UPDATE CITY INFO")
-    ui.configure(bg='light blue')
+    admin = tkinter.Tk()
+    admin.geometry("600x300")
+    admin.title("UPDATE CITY INFO")
+    admin.configure(bg='light blue')
     IDLabel = tkinter.Label(
-        ui, text="City_ID", bg='pink').grid(row=0, column=0)
+        admin, text="City_ID", bg='pink').grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
-        ui, textvariable=ID).grid(row=0, column=1)
+        admin, textvariable=ID).grid(row=0, column=1)
 
     cityLabel = tkinter.Label(
-        ui, text="City_Name", bg='pink').grid(row=1, column=0)
+        admin, text="City_Name", bg='pink').grid(row=1, column=0)
     city = tkinter.StringVar()
     cityEntry = tkinter.Entry(
-        ui, textvariable=city).grid(row=1, column=1)
+        admin, textvariable=city).grid(row=1, column=1)
 
     countryLabel = tkinter.Label(
-        ui, text="Country", bg='pink').grid(row=2, column=0)
+        admin, text="Country", bg='pink').grid(row=2, column=0)
     country = tkinter.StringVar()
     countryEntry = tkinter.Entry(
-        ui, textvariable=country).grid(row=2, column=1)
+        admin, textvariable=country).grid(row=2, column=1)
 
-    def updateCombined():
-        addCity(ID, city, country)
-    updateDataButton = tkinter.Button(
-        ui, text="Update city data", bg='yellow', command=updateCombined).grid(row=4, column=1)
-
-    def showCityCombined():
-        send_server("SHOW CITY")
-
-    showCityButton = tkinter.Button(
-        ui, text="Show city data", bg='green', command=showCityCombined).grid(row=5, column=1)
-
-    def backCombined():
-        global flag
-        flag = 3
-        ui.destroy()
-
-    backButton = tkinter.Button(
-        ui, text="Back", bg='orange', command=backCombined).grid(row=4, column=3)
-
-    def combinedClose():
-        send_server("{quit}")
-        client_socket.close()
-        global flag
-        flag = -1
-        ui.destroy()
-
-    closeButton = tkinter.Button(
-        ui, text="Close connection", bg="red", command=combinedClose).grid(row=5, column=8)
-
-    def on_closing():
-        """This function is to be called when the window is closed."""
-        send_server("{quit}")
-        client_socket.close()
-        global flag
-        flag = -1
-        ui.destroy()
-    ui.protocol("WM_DELETE_WINDOW", on_closing)
-
-    ui.mainloop()
+    admin.mainloop()
 
 
 def adminUI():
@@ -235,7 +197,6 @@ def adminUI():
     def combinedAddCity():
         global flag
         flag = 5
-        admin.destroy()
         # addCityUI()
         #addCity(ID, city, country)
 
@@ -246,7 +207,6 @@ def adminUI():
         global flag
         flag = 4
         admin.destroy()
-
     updateDataButton = tkinter.Button(
         admin, text="Update weather data", bg='yellow', command=combinedUpdateWeather).grid(row=2, column=7)
 
@@ -396,9 +356,6 @@ def modeFilter(str):
         tkinter.messagebox.showinfo(
             "STATUS", "ADD CITY UNSUCCESSFULLY", master=master1)
         return 1
-    elif code == "CITY":
-        tkinter.messagebox.showinfo(
-            "SHOW CITY", str[5:len(str)], master=master1)
 
 
 def receive():
