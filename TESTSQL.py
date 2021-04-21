@@ -1,4 +1,6 @@
 import sqlite3
+import datetime
+
 
 sqliteConnection = sqlite3.connect('weather.db')
 cursor = sqliteConnection.cursor()
@@ -20,22 +22,147 @@ def insertCity(con, cur, id, name, country):
     con.commit()
 
 
-
 def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
-    
     query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + minT + "'" + ", " + "'" + \
-            maxT + "'" + ", " + "'" + s_id + "'"+")"
+        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
+            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
+    print(query)
 
     cur.execute(query)
     con.commit()
 
 
 def getWeather(con, cur):
-    query = "SELECT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
+    query = "SELECT DISTINCT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
     cursor.execute(query)
     table = cursor.fetchall()
     return table
+
+
+def getCity(con, cur):
+    query = "SELECT* FROM CITY"
+    cursor.execute(query)
+    table = cursor.fetchall()
+    return table
+
+
+def printAllCity(con, cur):
+    table = getCity(con, cur)
+    for i in table:
+        print(i)
+
+
+def now():
+    return datetime.datetime.now()
+
+
+def findToArray(con, cur, data):
+    # ('004', '2021-4-26', 22.0, 26.0, '1', '1', 'Rainy', '004', 'Tokyo', 'Japan')
+    table = getWeather(con, cur)
+
+    result = []
+
+    for i in range(len(table)):
+        for j in range(len(table[i])):
+            if table[i][j] == data:
+                result.append(table[i])
+                break
+    return result
+
+
+def printWeatherArray(a):
+    temp = ""
+    for weather in a:
+        temp += weather[8] + " " + weather[1] + " " + \
+            str(weather[2]) + " " + str(weather[3]) + " " + weather[6] + '\n'
+    return temp
+
+
+def printCity7Day(con, cur, city):
+    table = getWeather(con, cur)
+
+    today = now()
+    # 001, 2021-4-24, 30.0, 35.0, 2, 2, Sunny, 001, HaNoi, VietNam
+
+    validDay = []
+    for i in range(7):
+        # print(str(today.year) + "-" +
+        #      str(today.month) + "-" + str(today.day + i))
+        validDay.append(str(today.year) + "-" +
+                        str(today.month) + "-" + str(today.day + i))
+
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+
+    for cid in listCityID:
+        temp = ""
+        if(cid == city):
+            aWeather = findToArray(con, cur, cid)
+            for weather in aWeather:
+                cWeather = []
+                if (weather[1] in validDay) and cid == weather[0]:
+                    cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
+
+
+def printAllCityInDay(con, cur):
+    table = getWeather(con, cur)
+
+    today = now()
+    # 001, 2021-4-24, 30.0, 35.0, 2, 2, Sunny, 001, HaNoi, VietNam
+
+    validDay = (str(today.year) + "-" +
+                str(today.month) + "-" + str(today.day))
+    print(validDay)
+    #validDay = '2021-4-24'
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+
+    for cid in listCityID:
+        temp = ""
+        aWeather = findToArray(con, cur, cid)
+        for weather in aWeather:
+            cWeather = []
+            if (weather[1] == validDay) and cid == weather[0]:
+                cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
+
+
+def printAllCityInSpecifiedDay(con, cur, validDay):
+    table = getWeather(con, cur)
+
+    aCity = getCity(con, cur)
+
+    result = ""
+    listCityID = []
+    for i in range(len(aCity)):
+        listCityID.append(aCity[i][0])
+
+    # print(listCityID)
+
+    for cid in listCityID:
+        temp = ""
+        aWeather = findToArray(con, cur, cid)
+        for weather in aWeather:
+            cWeather = []
+            if (weather[1] == validDay) and cid == weather[0]:
+                cWeather.append(weather)
+                result += printWeatherArray(cWeather)
+    return result
 
 
 def printAllSQL(con, cur):
@@ -51,6 +178,7 @@ def printAllSQL(con, cur):
 
 
 def printFindSQL(con, cur, data):
+    # ('004', '2021-4-26', 22.0, 26.0, '1', '1', 'Rainy', '004', 'Tokyo', 'Japan')
     table = getWeather(con, cur)
 
     result = ""
@@ -67,21 +195,21 @@ def printFindSQL(con, cur, data):
 
 try:
     print("Successfully Connected to SQLite")
+
     # TEST CASE:
-    #executeSQL(sqliteConnection, cursor, 'data.sql')
+    executeSQL(sqliteConnection, cursor, 'data.sql')
     #insertCity(sqliteConnection, cursor, "006", "Cam Ranh", "VietNam")
-    insertWeather(sqliteConnection, cursor, "005", '2021-4-24', '30', '35', '2')
+    #insertWeather(sqliteConnection, cursor, "003", stri, 30, 35, '2')
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    #print(printAllSQL(sqliteConnection, cursor))
-
+    #print(printCity7Day(sqliteConnection, cursor, '001'))
+    print(printAllCityInDay(sqliteConnection, cursor))
+    print(printAllCityInSpecifiedDay(sqliteConnection, cursor, '2021-4-24'))
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
 
-    # for i in range(7):
-    
-
-    #print(printFindSQL(sqliteConnection, cursor, '004'))
+    #print(printAllCity(sqliteConnection, cursor))
+    # ;print(printFindSQL(sqliteConnection, cursor, '004'))
 
     cursor.close()
 
