@@ -1,9 +1,13 @@
 import sqlite3
 import datetime
-
+import random
 
 sqliteConnection = sqlite3.connect('weather.db')
 cursor = sqliteConnection.cursor()
+
+
+def now():
+    return datetime.datetime.now()
 
 
 def executeSQL(con, cur, filename):
@@ -22,38 +26,57 @@ def insertCity(con, cur, id, name, country):
     con.commit()
 
 
-def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
-    query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
-            str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
-    print(query)
+def updateWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    query = "UPDATE WEATHER_DAILY SET MIN_TEMP=" + str(minT) + ", MAX_TEMP=" +\
+            str(maxT) + ", S_ID=" + s_id + " WHERE C_ID=" + \
+        "'" + c_id + "'" + " AND WDATE=" + "'" + dateW + "'"
 
     cur.execute(query)
     con.commit()
 
 
+def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    try:
+        query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
+            dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
+                str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
+
+        cur.execute(query)
+        con.commit()
+    except:
+        updateWeather(sqliteConnection, cursor,
+                      "001", '2021-4-24', 30, 35, '3')
+
+
+def generateWeatherData(con, cur):
+    random.seed(1)
+    for i in range(5):
+        cid = '00'+str(i+1)
+        today = now()
+        for j in range(30):
+            nextDay = datetime.datetime.today() + datetime.timedelta(days=j)
+            dateW = str(nextDay.year)+"-"+str(nextDay.month) + \
+                "-"+str(nextDay.day)
+            #insertWeather(con, cur, cid,)
+            deltaTemp = random.random()
+            minT = str(round((35-deltaTemp-1)))
+            maxT = str(round((35+deltaTemp+1)))
+            sID = str(random.randint(1, 8))
+            insertWeather(con, cur, cid, dateW, minT, maxT, sID)
+
+
 def getWeather(con, cur):
     query = "SELECT DISTINCT* FROM WEATHER_DAILY D, WEATHER_STATUS S, CITY C WHERE D.C_ID=C.C_ID AND D.S_ID=S.S_ID"
-    cursor.execute(query)
+    cur.execute(query)
     table = cursor.fetchall()
     return table
 
 
 def getCity(con, cur):
     query = "SELECT* FROM CITY"
-    cursor.execute(query)
+    cur.execute(query)
     table = cursor.fetchall()
     return table
-
-
-def printAllCity(con, cur):
-    table = getCity(con, cur)
-    for i in table:
-        print(i)
-
-
-def now():
-    return datetime.datetime.now()
 
 
 def findToArray(con, cur, data):
@@ -77,6 +100,7 @@ def printWeatherArray(a):
             str(weather[2]) + " " + str(weather[3]) + " " + weather[6] + '\n'
     return temp
 
+
 def printCity7Day(con, cur, data):
     table = getWeather(con, cur)
 
@@ -98,8 +122,8 @@ def printCity7Day(con, cur, data):
         listCityID.append(aCity[i][0])
 
     # print(listCityID)
-    cityData=getCity(con,cur)
-    for i in range (len(cityData)):
+    cityData = getCity(con, cur)
+    for i in range(len(cityData)):
         temp = ""
         if(data in cityData[i]):
             aWeather = findToArray(con, cur, cityData[i][0])
@@ -109,6 +133,7 @@ def printCity7Day(con, cur, data):
                     cWeather.append(weather)
                 result += printWeatherArray(cWeather)
     return result
+
 
 def printAllCityInDay(con, cur):
     table = getWeather(con, cur)
@@ -201,7 +226,7 @@ try:
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
     sqliteConnection.commit()
 
-    print(printCity7Day(sqliteConnection, cursor, 'HaNoi'))
+    #print(printCity7Day(sqliteConnection, cursor, 'HaNoi'))
     #print(printAllCityInDay(sqliteConnection, cursor))
     #print(printAllCityInSpecifiedDay(sqliteConnection, cursor, '2021-4-24'))
     #insertCity(sqliteConnection, cursor, '5', 'Washington')
@@ -209,6 +234,9 @@ try:
     #print(printAllCity(sqliteConnection, cursor))
     # ;print(printFindSQL(sqliteConnection, cursor, '004'))
 
+    insertWeather(sqliteConnection, cursor, "001", '2021-4-24', 29, 35, '4')
+
+    #generateWeatherData(sqliteConnection, cursor)
     cursor.close()
 
 

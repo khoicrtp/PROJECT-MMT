@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Server for multithreaded (asynchronous) chat application.c"""
 from socket import*
 from threading import Thread
 import sqlite3
@@ -29,14 +28,26 @@ def insertCity(con, cur, id, name, country):
     con.commit()
 
 
-def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
-
-    query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
-        dateW + "'" + ", " + "'" + minT + "'" + ", " + "'" + \
-            maxT + "'" + ", " + "'" + s_id + "'"+")"
+def updateWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    query = "UPDATE WEATHER_DAILY SET MIN_TEMP=" + str(minT) + ", MAX_TEMP=" +\
+            str(maxT) + ", S_ID=" + s_id + " WHERE C_ID=" + \
+        "'" + c_id + "'" + " AND WDATE=" + "'" + dateW + "'"
 
     cur.execute(query)
     con.commit()
+
+
+def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
+    try:
+        query = "INSERT INTO WEATHER_DAILY(C_ID, WDATE, MIN_TEMP, MAX_TEMP, S_ID) VALUES (" + "'" + c_id + "'" + ", " + "'" + \
+            dateW + "'" + ", " + "'" + str(minT) + "'" + ", " + "'" + \
+                str(maxT) + "'" + ", " + "'" + s_id + "'"+")"
+
+        cur.execute(query)
+        con.commit()
+    except:
+        updateWeather(sqliteConnection, cursor,
+                      "001", '2021-4-24', 30, 35, '3')
 
 
 def updateWeather(str, sqliteConnection, cursor):
@@ -174,7 +185,7 @@ def printAllCityInDay(con, cur):
 
     validDay = (str(today.year) + "-" +
                 str(today.month) + "-" + str(today.day))
-    print(validDay)
+    # print(validDay)
     #validDay = '2021-4-24'
     aCity = getCity(con, cur)
 
@@ -469,6 +480,11 @@ def serverUI():
         top, text="Disconnect", command=Disconnect_Clients)
     send_button.pack()
 
+    def on_closing():
+        """This function is to be called when the window is closed."""
+        Disconnect_Clients()
+        top.destroy()
+    top.protocol("WM_DELETE_WINDOW", on_closing)
     # msg_list.insert(tkinter.END, msg)
     top.mainloop()
 

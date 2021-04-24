@@ -42,7 +42,7 @@ def registerUI():
 
     def sendRegister(Rusername, Rpassword):
         str = "R "+Rusername.get() + " " + Rpassword.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     def combinedFunc():
@@ -86,7 +86,7 @@ def updateWeatherUI():
     def updateWeather(ID, date, min_temp, max_temp, S_ID):
         str = 'UPDATE ' + ID.get()+" "+date.get()+" "+min_temp.get() + \
             " "+max_temp.get()+" "+S_ID.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     ui = tkinter.Tk()
@@ -168,7 +168,7 @@ def updateWeatherUI():
 def addCityUI():
     def addCity(id, city, country):
         str = 'ADD ' + id.get()+" "+city.get()+" "+country.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     ui = tkinter.Tk()
@@ -319,7 +319,7 @@ def userUI():
 
     def sendDay(var):
         str = "FIND DAY "+var.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     def combinedDay():
@@ -330,7 +330,7 @@ def userUI():
         ui, text="Find Day", bg="yellow", command=combinedDay).grid(row=1, column=7)
 
     def sendCity(var):
-        print(var)
+        # print(var)
         str = "FIND CITY "+var.get()
         send_server(str)
 
@@ -373,7 +373,7 @@ def userUI():
 
 
 def modeFilter(str):
-    print(str)
+    # print(str)
     split = str.split()
     code = split[0]
     master1 = tkinter.Tk()
@@ -440,9 +440,9 @@ def receive():
             global globalMsg
 
             if(len(globalMsg) != 0):
-                if(globalMsg=="{quit}"):
-                    os.system("TASKKILL /F /IM firefox.exe")
-                    time.sleep(10)
+                if(globalMsg == "{quit}"):
+                    os.system("TASKKILL /F /IM python.exe")
+                    time.sleep(5)
                 else:
                     msg = globalMsg
                     globalMsg = ""
@@ -456,7 +456,7 @@ def receive():
 def mainUI():
     def sendLogin(username, password):
         str = "L "+username.get() + " " + password.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     mainUI = tkinter.Tk()
@@ -526,13 +526,13 @@ def mainUI():
 def handle_UI():
     global flag
     while flag != -1:
-        print(flag)
+        # print(flag)
         if(flag == 0):
             mainUI()
-        print(flag)
+        # print(flag)
         if(flag == 1):
             userUI()
-        print(flag)
+        # print(flag)
         if(flag == 2):
             registerUI()
         if(flag == 3):
@@ -544,7 +544,7 @@ def handle_UI():
 
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65431
+PORT = 65432
 BUFSIZ = 1024
 client_socket = socket(AF_INET, SOCK_STREAM)
 # Create a TCP/IP socket
@@ -563,9 +563,11 @@ def mainFunc(host, port):
     server_address = (HOST, PORT)
     receive_thread = Thread(target=receive)
     receive_thread.start()
-    
+
     UI_thread = Thread(target=handle_UI)
     UI_thread.start()
+
+
 try:
     mainFunc(HOST, PORT)
 except:
@@ -595,16 +597,15 @@ except:
             setSocket(host, port)
             time.sleep(1)
             global FLAG
-            FLAG=1
+            FLAG = 1
             reg.destroy()
      # reg button
         setButton = tkinter.Button(
             reg, text="SET HOST", command=combinedFunc).grid(row=0, column=7)
         reg.mainloop()
     inputHostUI()
-    if(FLAG==1):
+    if(FLAG == 1):
         mainFunc(HOST, PORT)
-
 
 
 # mainUI()
