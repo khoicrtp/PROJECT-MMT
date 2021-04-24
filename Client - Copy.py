@@ -11,6 +11,7 @@ import time
 
 globalMsg = ""
 flag = 0
+FLAG = 0
 
 ########################################
 
@@ -552,38 +553,27 @@ def mainFunc(host, port):
     HOST = host
     PORT = port
 
-    if not PORT:
-        PORT = 65432
-    else:
-        PORT = int(PORT)
-
     ADDR = (HOST, PORT)
-    client_socket = socket(AF_INET, SOCK_STREAM)
     client_socket.connect(ADDR)
     server_address = (HOST, PORT)
     receive_thread = Thread(target=receive)
     receive_thread.start()
-
+    
     UI_thread = Thread(target=handle_UI)
     UI_thread.start()
-
-
 try:
-    mainFunc('127.0.0.1', 65432)
-
+    mainFunc(HOST, PORT)
 except:
     def inputHostUI():
         reg = tkinter.Tk()
         reg.geometry('600x300')
         reg.title('INPUT HOST')
         reg.configure(bg='light blue')
-
     # username label and text entry box
         hostLabel = tkinter.Label(reg, text="HOST").grid(row=0, column=0)
         host = tkinter.StringVar()
         hostEntry = tkinter.Entry(
             reg, textvariable=host).grid(row=0, column=1)
-
     # password label and password entry box
         portLabel = tkinter.Label(reg, text="PORT").grid(row=1, column=0)
         port = tkinter.StringVar()
@@ -591,22 +581,25 @@ except:
             reg, textvariable=port, show='*').grid(row=1, column=1)
 
         def setSocket(hostname, portID):
+            global HOST
+            global PORT
             HOST = hostname.get()
             PORT = int(portID.get())
 
         def combinedFunc():
             setSocket(host, port)
             time.sleep(1)
+            global FLAG
+            FLAG=1
             reg.destroy()
-            print(hostname.get(), int(portID.get()))
-            mainFunc(hostname.get(), int(portID.get()))
-    # reg button
+     # reg button
         setButton = tkinter.Button(
             reg, text="SET HOST", command=combinedFunc).grid(row=0, column=7)
-
         reg.mainloop()
-
     inputHostUI()
+    if(FLAG==1):
+        mainFunc(HOST, PORT)
+
 
 
 # mainUI()
