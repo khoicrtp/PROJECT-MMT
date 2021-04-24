@@ -130,11 +130,11 @@ def updateWeatherUI():
     updateDataButton = tkinter.Button(
         ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
 
-    def showWeatherCombined():
-        send_server("SHOW WEATHER")
+    def showStatCombined():
+        send_server("SHOW STATUS")
 
-    showWeatherButton = tkinter.Button(
-        ui, text="SHOW WEATHER", bg='yellow', command=showWeatherCombined).grid(row=6, column=1)
+    showStatButton = tkinter.Button(
+        ui, text="SHOW STATUS", bg='yellow', command=showStatCombined).grid(row=6, column=1)
 
     def backCombined():
         global flag
@@ -428,9 +428,9 @@ def modeFilter(str):
     elif code == "CITY":
         tkinter.messagebox.showinfo(
             "SHOW CITY", str[5:len(str)], master=master1)
-    elif code == "WEATHER":
+    elif code == "STATUS":
         tkinter.messagebox.showinfo(
-            "SHOW WEATHER", str[8:len(str)], master=master1)
+            "SHOW STATUS", str[7:len(str)], master=master1)
 
 
 def receive():
@@ -545,7 +545,7 @@ def handle_UI():
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65432
-BUFSIZ = 1024
+BUFSIZ = 32768
 client_socket = socket(AF_INET, SOCK_STREAM)
 # Create a TCP/IP socket
 

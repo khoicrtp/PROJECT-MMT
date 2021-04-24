@@ -13,7 +13,7 @@ PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind((HOST, PORT))
 
-BUFSIZ = 1024
+BUFSIZ = 32768
 ADDR = (HOST, PORT)
 
 # SQL
@@ -46,26 +46,29 @@ def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
         cur.execute(query)
         con.commit()
     except:
-        updateWeather(sqliteConnection, cursor,
-                      "001", '2021-4-24', 30, 35, '3')
+        query = "UPDATE WEATHER_DAILY SET MIN_TEMP=" + str(minT) + ", MAX_TEMP=" +\
+            str(maxT) + ", S_ID=" + s_id + " WHERE C_ID=" + \
+            "'" + c_id + "'" + " AND WDATE=" + "'" + dateW + "'"
+
+        cur.execute(query)
+        con.commit()
 
 
 def updateWeather(str, sqliteConnection, cursor):
     split = str.split()
-    ID = split[0]
-    date = split[1]
+    cID = split[0]
+    dateW = split[1]
     min_temp = split[2]
     max_temp = split[3]
     S_ID = split[4]
     try:
-        insertWeather(sqliteConnection, cursor, ID,
-                      date, min_temp, max_temp, S_ID)
+        insertWeather(sqliteConnection, cursor, cID,
+                      dateW, min_temp, max_temp, S_ID)
         sqliteConnection.commit()
         return 1
     except sqlite3.Error as error:
         print("Error while executing sqlite script", error)
         return 0
-    return 0
 
 
 def addCity(str, sqliteConnection, cursor):
@@ -99,6 +102,21 @@ def printAllSQL(con, cur):
         for j in range(len(table[i])):
             temp += str(table[i][j]) + " "
         result += temp + '\n'
+    return result
+
+
+def getStatus(con, cur):
+    query = "SELECT* FROM WEATHER_STATUS"
+    cur.execute(query)
+    table = cur.fetchall()
+    return table
+
+
+def printAllStatus(con, cur):
+    result = ""
+    table = getStatus(con, cur)
+    for i in table:
+        result += i[0] + " " + i[1] + '\n'
     return result
 
 
@@ -393,9 +411,9 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
         if info == "CITY":
             client.send(
                 bytes("CITY " + printAllCity(sqliteConnection, cursor), "utf8"))
-        elif info == "WEATHER":
+        elif info == "STATUS":
             client.send(
-                bytes("WEATHER " + printAllSQL(sqliteConnection, cursor), "utf8"))
+                bytes("STATUS " + printAllStatus(sqliteConnection, cursor), "utf8"))
     elif code == "UPDATE":
         append("%s:%s (ADMIN) request to update " %
                addresses[client] + " weather")

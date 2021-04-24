@@ -79,6 +79,13 @@ def getCity(con, cur):
     return table
 
 
+def getStatus(con, cur):
+    query = "SELECT* FROM WEATHER_STATUS"
+    cur.execute(query)
+    table = cursor.fetchall()
+    return table
+
+
 def findToArray(con, cur, data):
     # ('004', '2021-4-26', 22.0, 26.0, '1', '1', 'Rainy', '004', 'Tokyo', 'Japan')
     table = getWeather(con, cur)
@@ -214,7 +221,14 @@ def printFindSQL(con, cur, data):
     return result
 
 
+def printAllStatus(con, cur):
+    result = ""
+    table = getStatus(con, cur)
+    for i in table:
+        result += i[0] + " " + i[1] + '\n'
+    return result
 # def findInfo(con):
+
 
 try:
     print("Successfully Connected to SQLite")
@@ -224,7 +238,7 @@ try:
     #insertCity(sqliteConnection, cursor, "006", "Cam Ranh", "VietNam")
     #insertWeather(sqliteConnection, cursor, "003", stri, 30, 35, '2')
     #executeSQL(sqliteConnection, cursor, 'exec.sql')
-    sqliteConnection.commit()
+    # sqliteConnection.commit()
 
     #print(printCity7Day(sqliteConnection, cursor, 'HaNoi'))
     #print(printAllCityInDay(sqliteConnection, cursor))
@@ -234,8 +248,9 @@ try:
     #print(printAllCity(sqliteConnection, cursor))
     # ;print(printFindSQL(sqliteConnection, cursor, '004'))
 
-    insertWeather(sqliteConnection, cursor, "001", '2021-4-24', 29, 35, '4')
+    #insertWeather(sqliteConnection, cursor, "001", '2021-4-24', 29, 35, '4')
 
+    print(printAllStatus(sqliteConnection, cursor))
     #generateWeatherData(sqliteConnection, cursor)
     cursor.close()
 
