@@ -4,6 +4,8 @@ from socket import*
 from threading import Thread
 import sqlite3
 import datetime
+import tkinter
+
 clients = {}    # list of names
 addresses = {}
 
@@ -434,7 +436,12 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
 
     cursor.close()
     sqliteConnection.close()
-
+def broadcast():
+    for client in addresses:
+        client.send(bytes("{quit}","utf8"))
+        del addresses[client]
+        client.close()
+        
 
 def serverUI():
     top = tkinter.Tk()
@@ -453,10 +460,10 @@ def serverUI():
     msg_list.pack()
     messages_frame.pack()
 
-    def printServer(msg):
-        msg_list.insert(tkinter.END, msg)
+    def Disconnect_Clients():
+        broadcast()
 
-    send_button = tkinter.Button(top, text="Test", command=test)
+    send_button = tkinter.Button(top, text="Disconnect",command=Disconnect_Clients)
     send_button.pack()
 
     # msg_list.insert(tkinter.END, msg)
@@ -466,10 +473,12 @@ def serverUI():
 if __name__ == "__main__":
     SERVER.listen(5)
     append("Waiting for connection...")
+    SERVERUI_THREAD = Thread(target=serverUI)
+    SERVERUI_THREAD.start()
+    
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
+        
     SERVER.close()
-    # file=open("history.txt","r+")
-    # file.truncate(0)
-    # file.close()
+
