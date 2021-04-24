@@ -6,7 +6,6 @@ import sqlite3
 import datetime
 import tkinter
 
-clients = {}    # list of names
 addresses = {}
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
@@ -436,12 +435,15 @@ def handle_client(client, globalMsg):  # Takes client socket as argument.
 
     cursor.close()
     sqliteConnection.close()
+
+
 def broadcast():
+    global addresses
     for client in addresses:
-        client.send(bytes("{quit}","utf8"))
+        client.send(bytes("{quit}", "utf8"))
         del addresses[client]
         client.close()
-        
+
 
 def serverUI():
     top = tkinter.Tk()
@@ -463,7 +465,8 @@ def serverUI():
     def Disconnect_Clients():
         broadcast()
 
-    send_button = tkinter.Button(top, text="Disconnect",command=Disconnect_Clients)
+    send_button = tkinter.Button(
+        top, text="Disconnect", command=Disconnect_Clients)
     send_button.pack()
 
     # msg_list.insert(tkinter.END, msg)
@@ -475,10 +478,9 @@ if __name__ == "__main__":
     append("Waiting for connection...")
     SERVERUI_THREAD = Thread(target=serverUI)
     SERVERUI_THREAD.start()
-    
+
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
-        
-    SERVER.close()
 
+    SERVER.close()
