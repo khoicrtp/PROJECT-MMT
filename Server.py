@@ -482,20 +482,8 @@ def broadcast():
 
 def serverUI():
     top = tkinter.Tk()
-    top.title("Chatter")
-
-    messages_frame = tkinter.Frame(top)
-    my_msg = tkinter.StringVar()  # For the messages to be sent.
-
-# To navigate through past messages.
-    scrollbar = tkinter.Scrollbar(messages_frame)
-# Following will contain the messages.
-    msg_list = tkinter.Listbox(messages_frame, height=15,
-                               width=50)
-    scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-    msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
-    msg_list.pack()
-    messages_frame.pack()
+    top.title("SERVER")
+    top.geometry("600x300")
 
     def Disconnect_Clients():
         broadcast()
