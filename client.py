@@ -8,9 +8,11 @@ from tkinter import messagebox
 import os
 import datetime
 import time
+import os
 
 globalMsg = ""
 flag = 0
+FLAG = 0
 
 ########################################
 
@@ -27,20 +29,22 @@ def registerUI():
     reg.configure(bg='light blue')
 
     # username label and text entry box
-    RusernameLabel = tkinter.Label(reg, text="Username").grid(row=0, column=0)
+    RusernameLabel = tkinter.Label(
+        reg, text="Username").pack()  # .grid(row=0, column=0)
     Rusername = tkinter.StringVar()
     RusernameEntry = tkinter.Entry(
         reg, textvariable=Rusername).grid(row=0, column=1)
 
     # password label and password entry box
-    RpasswordLabel = tkinter.Label(reg, text="Password").grid(row=1, column=0)
+    RpasswordLabel = tkinter.Label(
+        reg, text="Password").pack()  # .grid(row=1, column=0)
     Rpassword = tkinter.StringVar()
     RpasswordEntry = tkinter.Entry(
-        reg, textvariable=Rpassword, show='*').grid(row=1, column=1)
+        reg, textvariable=Rpassword, show='*').pack()  # .grid(row=1, column=1)
 
     def sendRegister(Rusername, Rpassword):
         str = "R "+Rusername.get() + " " + Rpassword.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     def combinedFunc():
@@ -49,7 +53,7 @@ def registerUI():
         reg.destroy()
     # reg button
     regButton = tkinter.Button(
-        reg, text="Register", command=combinedFunc).grid(row=0, column=7)
+        reg, text="Register", command=combinedFunc).pack()  # .grid(row=0, column=7)
 
     def combinedLog():
         global flag
@@ -57,7 +61,7 @@ def registerUI():
         reg.destroy()
 
     logoutButton = tkinter.Button(
-        reg, text="Login", bg='orange', command=combinedLog).grid(row=1, column=7)
+        reg, text="Login", bg='orange', command=combinedLog).pack()  # .grid(row=1, column=7)
 
     def combinedClose():
         send_server("{quit}")
@@ -67,7 +71,7 @@ def registerUI():
         reg.destroy()
 
     closeButton = tkinter.Button(
-        reg, text="Close connection", bg="red", command=combinedClose).grid(row=2, column=7)
+        reg, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=2, column=7)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -84,7 +88,7 @@ def updateWeatherUI():
     def updateWeather(ID, date, min_temp, max_temp, S_ID):
         str = 'UPDATE ' + ID.get()+" "+date.get()+" "+min_temp.get() + \
             " "+max_temp.get()+" "+S_ID.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     ui = tkinter.Tk()
@@ -93,52 +97,54 @@ def updateWeatherUI():
     ui.configure(bg='light blue')
 
     IDLabel = tkinter.Label(
-        ui, text="City_ID", bg='pink').grid(row=0, column=0)
+        ui, text="City_ID", bg='pink').pack()  # .grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
-        ui, textvariable=ID).grid(row=0, column=1)
+        ui, textvariable=ID).pack()  # .grid(row=0, column=1)
 
     dateLabel = tkinter.Label(
-        ui, text="Date", bg='pink').grid(row=1, column=0)
+        ui, text="Date", bg='pink').pack()  # .grid(row=1, column=0)
     date = tkinter.StringVar()
     dateEntry = tkinter.Entry(
-        ui, textvariable=date).grid(row=1, column=1)
+        ui, textvariable=date).pack()  # .grid(row=1, column=1)
 
     min_tempLabel = tkinter.Label(
-        ui, text="Min_temp", bg='pink').grid(row=2, column=0)
+        ui, text="Min_temp", bg='pink').pack()  # .grid(row=2, column=0)
     min_temp = tkinter.StringVar()
     min_tempEntry = tkinter.Entry(
-        ui, textvariable=min_temp).grid(row=2, column=1)
+        ui, textvariable=min_temp).pack()  # .grid(row=2, column=1)
 
     max_tempLabel = tkinter.Label(
-        ui, text="Max_temp", bg='pink').grid(row=3, column=0)
+        ui, text="Max_temp", bg='pink').pack()  # .grid(row=3, column=0)
     max_temp = tkinter.StringVar()
     max_tempEntry = tkinter.Entry(
-        ui, textvariable=max_temp).grid(row=3, column=1)
+        ui, textvariable=max_temp).pack()  # .grid(row=3, column=1)
 
     S_IDLabel = tkinter.Label(
-        ui, text="S_ID", bg='pink').grid(row=4, column=0)
+        ui, text="S_ID", bg='pink').pack()  # .grid(row=4, column=0)
     S_ID = tkinter.StringVar()
     S_IDEntry = tkinter.Entry(
-        ui, textvariable=S_ID).grid(row=4, column=1)
+        ui, textvariable=S_ID).pack()  # .grid(row=4, column=1)
 
     def updateCombined():
         updateWeather(ID, date, min_temp, max_temp, S_ID)
 
     updateDataButton = tkinter.Button(
-        ui, text="Update weather data", bg='yellow', command=updateCombined).grid(row=5, column=1)
-    def showWeatherCombined():
-        send_server("SHOW WEATHER")
+        ui, text="Update weather data", bg='yellow', command=updateCombined).pack()  # .grid(row=5, column=1)
 
-    showWeatherButton = tkinter.Button(
-        ui, text="SHOW WEATHER", bg='yellow', command=showWeatherCombined).grid(row=6, column=1)
+    def showStatCombined():
+        send_server("SHOW STATUS")
+
+    showStatButton = tkinter.Button(
+        ui, text="SHOW STATUS", bg='yellow', command=showStatCombined).pack()  # .grid(row=6, column=1)
+
     def backCombined():
         global flag
         flag = 3
         ui.destroy()
 
     backButton = tkinter.Button(
-        ui, text="Back", bg='orange', command=backCombined).grid(row=5, column=3)
+        ui, text="Back", bg='orange', command=backCombined).pack()  # .grid(row=5, column=3)
 
     def combinedClose():
         send_server("{quit}")
@@ -148,7 +154,7 @@ def updateWeatherUI():
         ui.destroy()
 
     closeButton = tkinter.Button(
-        ui, text="Close connection", bg="red", command=combinedClose).grid(row=5, column=8)
+        ui, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=5, column=8)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -164,7 +170,7 @@ def updateWeatherUI():
 def addCityUI():
     def addCity(id, city, country):
         str = 'ADD ' + id.get()+" "+city.get()+" "+country.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     ui = tkinter.Tk()
@@ -172,33 +178,33 @@ def addCityUI():
     ui.title("UPDATE CITY INFO")
     ui.configure(bg='light blue')
     IDLabel = tkinter.Label(
-        ui, text="City_ID", bg='pink').grid(row=0, column=0)
+        ui, text="City_ID", bg='pink').pack()  # .grid(row=0, column=0)
     ID = tkinter.StringVar()
     IDEntry = tkinter.Entry(
-        ui, textvariable=ID).grid(row=0, column=1)
+        ui, textvariable=ID).pack()  # .grid(row=0, column=1)
 
     cityLabel = tkinter.Label(
-        ui, text="City_Name", bg='pink').grid(row=1, column=0)
+        ui, text="City_Name", bg='pink').pack()  # .grid(row=1, column=0)
     city = tkinter.StringVar()
     cityEntry = tkinter.Entry(
-        ui, textvariable=city).grid(row=1, column=1)
+        ui, textvariable=city).pack()  # .grid(row=1, column=1)
 
     countryLabel = tkinter.Label(
-        ui, text="Country", bg='pink').grid(row=2, column=0)
+        ui, text="Country", bg='pink').pack()  # .grid(row=2, column=0)
     country = tkinter.StringVar()
     countryEntry = tkinter.Entry(
-        ui, textvariable=country).grid(row=2, column=1)
+        ui, textvariable=country).pack()  # .grid(row=2, column=1)
 
     def updateCombined():
         addCity(ID, city, country)
     updateDataButton = tkinter.Button(
-        ui, text="Update city data", bg='yellow', command=updateCombined).grid(row=4, column=1)
+        ui, text="Update city data", bg='yellow', command=updateCombined).pack()  # .grid(row=4, column=1)
 
     def showCityCombined():
         send_server("SHOW CITY")
 
     showCityButton = tkinter.Button(
-        ui, text="Show city data", bg='green', command=showCityCombined).grid(row=5, column=1)
+        ui, text="Show city data", bg='green', command=showCityCombined).pack()  # .grid(row=5, column=1)
 
     def backCombined():
         global flag
@@ -206,7 +212,7 @@ def addCityUI():
         ui.destroy()
 
     backButton = tkinter.Button(
-        ui, text="Back", bg='orange', command=backCombined).grid(row=4, column=3)
+        ui, text="Back", bg='orange', command=backCombined).pack()  # .grid(row=4, column=3)
 
     def combinedClose():
         send_server("{quit}")
@@ -216,7 +222,7 @@ def addCityUI():
         ui.destroy()
 
     closeButton = tkinter.Button(
-        ui, text="Close connection", bg="red", command=combinedClose).grid(row=5, column=8)
+        ui, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=5, column=8)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -244,7 +250,7 @@ def adminUI():
         #addCity(ID, city, country)
 
     addCityButton = tkinter.Button(
-        admin, text="Add City", bg='orange', command=combinedAddCity).grid(row=0, column=7)
+        admin, text="Add City", bg='pink', command=combinedAddCity).pack()  # grid(row=0, column=7)
 
     def combinedUpdateWeather():
         global flag
@@ -252,7 +258,7 @@ def adminUI():
         admin.destroy()
 
     updateDataButton = tkinter.Button(
-        admin, text="Update weather data", bg='yellow', command=combinedUpdateWeather).grid(row=2, column=7)
+        admin, text="Update weather data", bg='yellow', command=combinedUpdateWeather).pack()  # .grid(row=2, column=7)
 
     # changeUserButton = tkinter.Button(
     #    admin, text="Update user's info", bg='light green', command=combinedUpdateUser).grid(row=0, column=1)
@@ -265,7 +271,7 @@ def adminUI():
         admin.destroy()
 
     logoutButton = tkinter.Button(
-        admin, text="Logout", bg='orange', command=combinedLog).grid(row=3, column=7)
+        admin, text="Logout", bg='orange', command=combinedLog).pack()  # .grid(row=3, column=7)
 
     def combinedClose():
         send_server("{quit}")
@@ -275,7 +281,7 @@ def adminUI():
         admin.destroy()
 
     closeButton = tkinter.Button(
-        admin, text="Close connection", bg="red", command=combinedClose).grid(row=4, column=7)
+        admin, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=4, column=7)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -297,24 +303,25 @@ def userUI():
         send_server("FIND ALLCITYTODAY")
 
     listAllButton = tkinter.Button(
-        ui, text="Weather Today Of All City" , bg="light green", command=combinedPrintAll).grid(row=0, column=0)
+        ui, text="Weather Today Of All City", bg="light green", command=combinedPrintAll).pack()  # .grid(row=0, column=0)
 
     DayLabel = tkinter.Label(
-        ui, text="DAY: ").grid(row=1, column=0)
+        ui, text="DAY: ").pack()  # .grid(row=1, column=0)
     Day = tkinter.StringVar()
 
     DayEntry = tkinter.Entry(
-        ui, textvariable=Day).grid(row=1, column=3)
-    
+        ui, textvariable=Day).pack()  # .grid(row=1, column=3)
+
     CityLabel = tkinter.Label(
-        ui, text="CITY: ").grid(row=2, column=0)
+        ui, text="CITY: ").pack()  # .grid(row=2, column=0)
     City = tkinter.StringVar()
 
     CityEntry = tkinter.Entry(
-        ui, textvariable=City).grid(row=2, column=3)
+        ui, textvariable=City).pack()  # .grid(row=2, column=3)
+
     def sendDay(var):
         str = "FIND DAY "+var.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     def combinedDay():
@@ -322,19 +329,20 @@ def userUI():
         sendDay(Day)
 
     findDayButton = tkinter.Button(
-        ui, text="Find Day", bg="yellow", command=combinedDay).grid(row=1, column=7)
+        ui, text="Find Day", bg="yellow", command=combinedDay).pack()  # .grid(row=1, column=7)
 
     def sendCity(var):
-        print(var)
+        # print(var)
         str = "FIND CITY "+var.get()
         send_server(str)
-    
+
     def combinedCity():
         # ui.destroy()
         sendCity(City)
 
     findCityButton = tkinter.Button(
-        ui, text="Find City", bg="yellow", command=combinedCity).grid(row=2, column=7)
+        ui, text="Find City", bg="yellow", command=combinedCity).pack()  # .grid(row=2, column=7)
+
     def combinedLog():
         tkinter.messagebox.showinfo(
             "Goodbye", "Thank you for using my team's app!")
@@ -343,7 +351,7 @@ def userUI():
         ui.destroy()
 
     logoutButton = tkinter.Button(
-        ui, text="Logout", bg='orange', command=combinedLog).grid(row=3, column=7)
+        ui, text="Logout", bg='orange', command=combinedLog).pack()  # .grid(row=3, column=7)
 
     def combinedClose():
         send_server("{quit}")
@@ -353,7 +361,7 @@ def userUI():
         ui.destroy()
 
     closeButton = tkinter.Button(
-        ui, text="Close connection", bg="red", command=combinedClose).grid(row=4, column=7)
+        ui, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=4, column=7)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -367,7 +375,7 @@ def userUI():
 
 
 def modeFilter(str):
-    print(str)
+    # print(str)
     split = str.split()
     code = split[0]
     master1 = tkinter.Tk()
@@ -422,9 +430,9 @@ def modeFilter(str):
     elif code == "CITY":
         tkinter.messagebox.showinfo(
             "SHOW CITY", str[5:len(str)], master=master1)
-    elif code == "WEATHER":
+    elif code == "STATUS":
         tkinter.messagebox.showinfo(
-            "SHOW WEATHER", str[8:len(str)], master=master1)
+            "SHOW STATUS", str[7:len(str)], master=master1)
 
 
 def receive():
@@ -434,9 +442,13 @@ def receive():
             global globalMsg
 
             if(len(globalMsg) != 0):
-                msg = globalMsg
-                globalMsg = ""
-                modeFilter(msg)
+                if(globalMsg == "{quit}"):
+                    os.system("TASKKILL /F /IM python.exe")
+                    time.sleep(5)
+                else:
+                    msg = globalMsg
+                    globalMsg = ""
+                    modeFilter(msg)
             else:
                 globalMsg = client_socket.recv(BUFSIZ).decode("utf8")
         except OSError:
@@ -446,7 +458,7 @@ def receive():
 def mainUI():
     def sendLogin(username, password):
         str = "L "+username.get() + " " + password.get()
-        print(str)
+        # print(str)
         send_server(str)
 
     mainUI = tkinter.Tk()
@@ -455,21 +467,21 @@ def mainUI():
     mainUI.configure(bg='#ffc0cb')
 
     welcomeLabel = tkinter.Label(
-        mainUI, text="WELCOME TO WEATHER APP", bg='light blue').grid(row=0, column=0)
+        mainUI, text="WELCOME TO WEATHER APP", bg='light blue').pack()  # .grid(row=0, column=0)
 
 # username label and text entry box
     usernameLabel = tkinter.Label(
-        mainUI, text="Username", bg='pink').grid(row=1, column=0)
+        mainUI, text="Username", bg='pink').pack()  # .grid(row=1, column=0)
     username = tkinter.StringVar()
     usernameEntry = tkinter.Entry(
-        mainUI, textvariable=username).grid(row=1, column=1)
+        mainUI, textvariable=username).pack()  # .grid(row=1, column=1)
 
 # password label and password entry box
     passwordLabel = tkinter.Label(
-        mainUI, text="Password", bg='pink').grid(row=2, column=0)
+        mainUI, text="Password", bg='pink').pack()  # .grid(row=2, column=0)
     password = tkinter.StringVar()
     passwordEntry = tkinter.Entry(
-        mainUI, textvariable=password, show='*').grid(row=2, column=1)
+        mainUI, textvariable=password, show='*').pack()  # .grid(row=2, column=1)
 
     def combinedLog():
         usr = username
@@ -480,7 +492,7 @@ def mainUI():
 
 # login button
     loginButton = tkinter.Button(
-        mainUI, text="Login", bg="yellow", command=combinedLog).grid(row=1, column=2)
+        mainUI, text="Login", bg="yellow", command=combinedLog).pack()  # .grid(row=1, column=2)
 
     def combinedReg():
         global flag
@@ -488,7 +500,7 @@ def mainUI():
         mainUI.destroy()
 
     regButton = tkinter.Button(
-        mainUI, text="Register", bg="orange", command=combinedReg).grid(row=2, column=2)
+        mainUI, text="Register", bg="orange", command=combinedReg).pack()  # .grid(row=2, column=2)
 
     def combinedClose():
         send_server("{quit}")
@@ -498,7 +510,7 @@ def mainUI():
         mainUI.destroy()
 
     closeButton = tkinter.Button(
-        mainUI, text="Close connection", bg="red", command=combinedClose).grid(row=3, column=2)
+        mainUI, text="EXIT", bg="red", command=combinedClose).pack()  # .grid(row=3, column=2)
 
     def on_closing():
         """This function is to be called when the window is closed."""
@@ -513,26 +525,16 @@ def mainUI():
 # ----Now comes the sockets part----
 
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65432        # The port used by the server
-BUFSIZ = 1024
-
-if not PORT:
-    PORT = 33000
-else:
-    PORT = int(PORT)
-
-
 def handle_UI():
     global flag
     while flag != -1:
-        print(flag)
+        # print(flag)
         if(flag == 0):
             mainUI()
-        print(flag)
+        # print(flag)
         if(flag == 1):
             userUI()
-        print(flag)
+        # print(flag)
         if(flag == 2):
             registerUI()
         if(flag == 3):
@@ -543,13 +545,72 @@ def handle_UI():
             addCityUI()
 
 
-# Create a TCP/IP socket
-ADDR = (HOST, PORT)
+HOST = '127.0.0.1'  # The server's hostname or IP address
+PORT = 65432
+BUFSIZ = 32768
 client_socket = socket(AF_INET, SOCK_STREAM)
-client_socket.connect(ADDR)
-server_address = (HOST, PORT)
-receive_thread = Thread(target=receive)
-receive_thread.start()
+# Create a TCP/IP socket
 
-UI_thread = Thread(target=handle_UI)
-UI_thread.start()
+
+def mainFunc(host, port):
+    # HOST = '127.0.0.1'  # The server's hostname or IP address
+    # PORT = 65431        # The port used by the server
+    global HOST
+    global PORT
+    HOST = host
+    PORT = port
+
+    ADDR = (HOST, PORT)
+    client_socket.connect(ADDR)
+    server_address = (HOST, PORT)
+    receive_thread = Thread(target=receive)
+    receive_thread.start()
+
+    UI_thread = Thread(target=handle_UI)
+    UI_thread.start()
+
+
+try:
+    mainFunc(HOST, PORT)
+except:
+    def inputHostUI():
+        reg = tkinter.Tk()
+        reg.geometry('600x300')
+        reg.title('INPUT HOST')
+        reg.configure(bg='light blue')
+    # username label and text entry box
+        hostLabel = tkinter.Label(
+            reg, text="HOST").pack()  # .grid(row=0, column=0)
+        host = tkinter.StringVar()
+        hostEntry = tkinter.Entry(
+            reg, textvariable=host).pack()  # .grid(row=0, column=1)
+    # password label and password entry box
+        # .grid(row=1, column=0)
+        portLabel = tkinter.Label(reg, text="PORT").pack()
+        port = tkinter.StringVar()
+        portEntry = tkinter.Entry(
+            reg, textvariable=port, show='*').pack()  # .grid(row=1, column=1)
+
+        def setSocket(hostname, portID):
+            global HOST
+            global PORT
+            HOST = hostname.get()
+            PORT = int(portID.get())
+
+        def combinedFunc():
+            setSocket(host, port)
+            time.sleep(1)
+            global FLAG
+            FLAG = 1
+            reg.destroy()
+     # reg button
+        setButton = tkinter.Button(
+            reg, text="SET HOST", command=combinedFunc).pack()  # .grid(row=0, column=7)
+        reg.mainloop()
+    inputHostUI()
+    if(FLAG == 1):
+        mainFunc(HOST, PORT)
+
+
+# mainUI()
+# userUI()

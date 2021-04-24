@@ -19,11 +19,18 @@ def executeSQL(con, cur, filename):
 
 
 def insertCity(con, cur, id, name, country):
-    query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
-        "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
+    try:
+        query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
+            "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
 
-    cur.execute(query)
-    con.commit()
+        cur.execute(query)
+        con.commit()
+    except:
+        query = "UPDATE CITY SET C_NAME=" + "'" + name + "'" + ", COUNTRY=" +\
+            "'" + country + "'" + " WHERE C_ID=" + \
+            "'" + id + "'"
+        cur.execute(query)
+        con.commit()
 
 
 def updateWeather(con, cur, c_id, dateW, minT, maxT, s_id):
@@ -44,8 +51,12 @@ def insertWeather(con, cur, c_id, dateW, minT, maxT, s_id):
         cur.execute(query)
         con.commit()
     except:
-        updateWeather(sqliteConnection, cursor,
-                      "001", '2021-4-24', 30, 35, '3')
+        query = "UPDATE WEATHER_DAILY SET MIN_TEMP=" + str(minT) + ", MAX_TEMP=" +\
+            str(maxT) + ", S_ID=" + s_id + " WHERE C_ID=" + \
+            "'" + c_id + "'" + " AND WDATE=" + "'" + dateW + "'"
+
+        cur.execute(query)
+        con.commit()
 
 
 def generateWeatherData(con, cur):
@@ -250,8 +261,10 @@ try:
 
     #insertWeather(sqliteConnection, cursor, "001", '2021-4-24', 29, 35, '4')
 
-    print(printAllStatus(sqliteConnection, cursor))
+    #print(printAllStatus(sqliteConnection, cursor))
     #generateWeatherData(sqliteConnection, cursor)
+    insertCity(sqliteConnection, cursor, '005', 'Ber', 'Ger')
+
     cursor.close()
 
 

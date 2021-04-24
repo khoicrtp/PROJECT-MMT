@@ -20,12 +20,18 @@ ADDR = (HOST, PORT)
 
 
 def insertCity(con, cur, id, name, country):
-    # append("%s:%s " % addresses[client]+" "+id + " " + name + " " + country)
-    query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
-        "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
+    try:
+        query = "INSERT INTO CITY(C_ID, C_NAME, COUNTRY) VALUES (" + \
+            "'" + id + "'" + ", " + "'" + name + "'" + ", " + "'" + country + "'" ")"
 
-    cur.execute(query)
-    con.commit()
+        cur.execute(query)
+        con.commit()
+    except:
+        query = "UPDATE CITY SET C_NAME=" + "'" + name + "'" + ", COUNTRY=" +\
+            "'" + country + "'" + " WHERE C_ID=" + \
+            "'" + id + "'"
+        cur.execute(query)
+        con.commit()
 
 
 def updateWeather(con, cur, c_id, dateW, minT, maxT, s_id):
@@ -131,7 +137,7 @@ def printAllCity(con, cur):
     result = ""
     table = getCity(con, cur)
     for i in table:
-        result += str(i) + '\n'
+        result += i[0] + " " + i[1] + '\n'
     return result
 
 
