@@ -444,8 +444,8 @@ def mainUI():
 # ----Now comes the sockets part----
 
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65431        # The port used by the server
+HOST = '192.168.106.129'  # The server's hostname or IP address
+PORT = 7701        # The port used by the server
 BUFSIZ = 1024
 
 if not PORT:
