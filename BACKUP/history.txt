@@ -227,3 +227,23 @@ Waiting for connection...
 Waiting for connection...
 192.168.106.132:40586 has connected.
 192.168.106.132:40586 left.
+Waiting for connection...
+192.168.106.133:57784 has connected.
+192.168.106.133:57784 login username and password are x x
+192.168.106.133:57784 login username and password are x x
+192.168.106.133:57784 request to find ALL weather
+192.168.106.133:57784 left.
+192.168.106.133:57788 has connected.
+192.168.106.133:57788 login username and password are x x
+192.168.106.133:57788 login username and password are x x
+192.168.106.133:57788 login username and password are x x
+192.168.106.133:57788 left.
+192.168.106.133:57790 has connected.
+192.168.106.133:57790 login username and password are x x
+192.168.106.133:57790 request to find CR weather
+192.168.106.133:57790 request to find HCM weather
+192.168.106.132:40650 has connected.
+192.168.106.132:40650 login username and password are c c
+192.168.106.132:40650 request to find CR weather
+192.168.106.132:40650 left.
+192.168.106.132:40652 has connected.
