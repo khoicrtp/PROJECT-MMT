@@ -11,8 +11,8 @@ cursor = sqliteConnection.cursor()
 clients = {}    # list of names
 addresses = {}
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65431        # Port to listen on (non-privileged ports are > 1023)
+HOST = '192.168.106.129'  # Standard loopback interface address (localhost)
+PORT = 7701        # Port to listen on (non-privileged ports are > 1023)
 
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind((HOST, PORT))

@@ -204,3 +204,26 @@ Waiting for connection...
 Waiting for connection...
 127.0.0.1:37278 has connected.
 127.0.0.1:37278 login username and password are ad ad
+Waiting for connection...
+127.0.0.1:38458 has connected.
+127.0.0.1:38458 login username and password are ad ad
+127.0.0.1:38458 left.
+127.0.0.1:38460 has connected.
+127.0.0.1:38460 login username and password are ad ad
+127.0.0.1:38460 login username and password are c c
+127.0.0.1:38460 request to find ALL weather
+127.0.0.1:38460 request to find ALL weather
+127.0.0.1:38460 left.
+127.0.0.1:38542 has connected.
+127.0.0.1:38542 login username and password are c c
+127.0.0.1:38542 login username and password are c c
+127.0.0.1:38542 request to find ALL weather
+Waiting for connection...
+127.0.0.1:43154 has connected.
+127.0.0.1:43154 login username and password are c c
+127.0.0.1:43154 request to find ALL weather
+127.0.0.1:43154 left.
+Waiting for connection...
+Waiting for connection...
+192.168.106.132:40586 has connected.
+192.168.106.132:40586 left.
